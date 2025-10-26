@@ -149,6 +149,1008 @@
     </div>
 
     <script>
+        // Submissions data
+        const submissionsMap = {
+            "Roxanne, The Police": {
+                        "submitters": [
+                                    "Steve"
+                        ],
+                        "final_placement": "1",
+                        "colour": "red"
+            },
+            "Little Red Corvette, Prince": {
+                        "submitters": [
+                                    "Jem",
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Scarlet, The Rolling Stones": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Red Red Wine, Neil Diamond": {
+                        "submitters": [
+                                    "Stan"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Jamming, Bob Marley & The Wailers": {
+                        "submitters": [
+                                    "Corbs"
+                        ],
+                        "final_placement": "4",
+                        "colour": "red"
+            },
+            "Red Rain, Peter Gabriel": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Red Right Hand, Nick Cave & The Bad Seeds": {
+                        "submitters": [
+                                    "Jem",
+                                    "Paul",
+                                    "Steve"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Murder in the Red Barn, Tom Waits": {
+                        "submitters": [
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Crimson and Clover, Tommy James & The Shondells": {
+                        "submitters": [
+                                    "Stan"
+                        ],
+                        "final_placement": "4",
+                        "colour": "red"
+            },
+            "Red Guitar, David Sylvian": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Raspberry Beret, Prince": {
+                        "submitters": [
+                                    "Paul"
+                        ],
+                        "final_placement": "2",
+                        "colour": "red"
+            },
+            "Red Berry Joy Town, The Wonderstuff": {
+                        "submitters": [
+                                    "Shawn"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "The Coral Song, Kids TV 123": {
+                        "submitters": [
+                                    "Corbs"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Scarlet, U2": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Rose Tattoo, Dropkick Murphys": {
+                        "submitters": [
+                                    "Dave"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Red House, Jimi Hendrix": {
+                        "submitters": [
+                                    "Shawn"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Crimson, Skott": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Where the Wild Roses Grow, Nick Cave & The Bad Seeds and Kylie Minogue": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": "3",
+                        "colour": "red"
+            },
+            "Maroon, Taylor Swift": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Rosenrot, Rammstein": {
+                        "submitters": [
+                                    "Dave"
+                        ],
+                        "final_placement": null,
+                        "colour": "red"
+            },
+            "Sunshine, Atmosphere": {
+                        "submitters": [
+                                    "Dave"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Tangerine, Led Zeppelin": {
+                        "submitters": [
+                                    "Dave",
+                                    "Ian",
+                                    "Jem",
+                                    "Steve",
+                                    "Shawn",
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Clementine, Neil Young and Crazy Horse": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": "3",
+                        "colour": "orange"
+            },
+            "Peaches, The Presidents of the United States of America": {
+                        "submitters": [
+                                    "Jem"
+                        ],
+                        "final_placement": "2",
+                        "colour": "orange"
+            },
+            "Orange Blossom Special , Johnny Cash": {
+                        "submitters": [
+                                    "Stan"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Peaches, The Stranglers": {
+                        "submitters": [
+                                    "Stan",
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Waterloo Sunset , The Kinks": {
+                        "submitters": [
+                                    "Steve"
+                        ],
+                        "final_placement": "1",
+                        "colour": "orange"
+            },
+            "Orange Crush, REM": {
+                        "submitters": [
+                                    "Shawn",
+                                    "Paul"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Something in the Orange, Zach Bryan": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Ochre, Blood and Sun": {
+                        "submitters": [
+                                    "Mark",
+                                    "Corbs"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Apples and Oranges, The Charlatans": {
+                        "submitters": [
+                                    "Paul"
+                        ],
+                        "final_placement": "3",
+                        "colour": "orange"
+            },
+            "The Bronze, Queens of the Stone Age": {
+                        "submitters": [
+                                    "Corbs"
+                        ],
+                        "final_placement": "5",
+                        "colour": "orange"
+            },
+            "Clementine, Elliot Smith": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Gold Dust Woman, Fleetwood Mac": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Golden Retriever, Super Furry Animals": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Clementine, Pink Martini": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Peach Trees, Rufus Wainwright": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Bowl of Oranges, Bright Eyes": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Steal My Sunshine, LEN": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Kurious Oranj, The Fall": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "orange"
+            },
+            "Goodbye Yellow Brick Road, Elton John": {
+                        "submitters": [
+                                    "Dave"
+                        ],
+                        "final_placement": "2",
+                        "colour": "yellow"
+            },
+            "Big Yellow Taxi, Joni Mitchell": {
+                        "submitters": [
+                                    "Dave"
+                        ],
+                        "final_placement": "4",
+                        "colour": "yellow"
+            },
+            "Daffodil, Florence + the Machine": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Water Sports, James Clarke": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Build Me Up Buttercup, The Foundations": {
+                        "submitters": [
+                                    "Jem",
+                                    "Steve"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Honey Don't Think, Grant Lee Buffalo": {
+                        "submitters": [
+                                    "Jem"
+                        ],
+                        "final_placement": "3",
+                        "colour": "yellow"
+            },
+            "Don\u2019t Eat the Yellow Snow, Frank Zappa": {
+                        "submitters": [
+                                    "Stan",
+                                    "Shawn"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Here Comes the Sun, The Beatles": {
+                        "submitters": [
+                                    "Stan"
+                        ],
+                        "final_placement": "1",
+                        "colour": "yellow"
+            },
+            "Lemon Song, Led Zeppelin": {
+                        "submitters": [
+                                    "Steve"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Sunshine of My Love, Cream": {
+                        "submitters": [
+                                    "Shawn"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Golden Touch, Razorlight": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": "5",
+                        "colour": "yellow"
+            },
+            "Yellow Bird, Ben Stevenson": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Mellow Yellow, Donovan": {
+                        "submitters": [
+                                    "Paul"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Fields of Gold, Sting": {
+                        "submitters": [
+                                    "Paul"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Yellow Country Teeth, Clap Your Hands Say Yeah": {
+                        "submitters": [
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Yellow Light, Of Monsters and Men": {
+                        "submitters": [
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Golden Slumbers, The Beatles": {
+                        "submitters": [
+                                    "Corbs"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Sunshine Smile, Adorable": {
+                        "submitters": [
+                                    "Corbs"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Lemon, U2": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Lemonworld, The National": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "yellow"
+            },
+            "Fake Plastic Trees, Radiohead": {
+                        "submitters": [
+                                    "Dave"
+                        ],
+                        "final_placement": "1",
+                        "colour": "green"
+            },
+            "Green River, Creedence Clearwater Revival": {
+                        "submitters": [
+                                    "Dave",
+                                    "Shawn"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "From the Edge of the Deep Green Sea, The Cure": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": "5",
+                        "colour": "green"
+            },
+            "Froggy Went a Courtin, Elizabeth Mitchell": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Jealous Guy, Roxy Music": {
+                        "submitters": [
+                                    "Jem"
+                        ],
+                        "final_placement": "3",
+                        "colour": "green"
+            },
+            "Green and Grey, New Model Army": {
+                        "submitters": [
+                                    "Jem"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Green Mind, Dinosaur Jr.": {
+                        "submitters": [
+                                    "Stan"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Nothing But Green Lights, Tom Vek": {
+                        "submitters": [
+                                    "Stan"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Green Onions, Two Tone Mods": {
+                        "submitters": [
+                                    "Steve"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Jungle Boogie, Kool and the Gang": {
+                        "submitters": [
+                                    "Steve"
+                        ],
+                        "final_placement": "2",
+                        "colour": "green"
+            },
+            "Green Manalishi, Fleetwood Mac": {
+                        "submitters": [
+                                    "Shawn"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "A Forest, The Cure": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": "3",
+                        "colour": "green"
+            },
+            "O Green World, Gorillaz": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Green Eyes, Coldplay": {
+                        "submitters": [
+                                    "Paul"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Grassman, Dodgy": {
+                        "submitters": [
+                                    "Paul"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Green Door, Shakin' Stevens": {
+                        "submitters": [
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Greensleeves, The King's Singers": {
+                        "submitters": [
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Teal, Wunderhorse": {
+                        "submitters": [
+                                    "Corbs"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Green Manalishi, Judas Priest": {
+                        "submitters": [
+                                    "Corbs"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Forest Fire, Lloyd Cole and the Commotions": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "green"
+            },
+            "Tangled Up in Blue, Bob Dylan": {
+                        "submitters": [
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Blues Run the Game, Jackson Frank": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Natural Blues, Moby": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Lucy in the Sky with Diamonds, The Beatles": {
+                        "submitters": [
+                                    "Steve"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Electric Blue, Arcade Fire": {
+                        "submitters": [
+                                    "Jem"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Forever in Blue Jeans, Neil Diamond": {
+                        "submitters": [
+                                    "Stan"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "It's All Over Now, Baby Blue, Them": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Blue Hat for a Blue Day, Nick Heyward": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Bluebird, Paul McCartney & Wings": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Fisherman's Blues, The Waterboys": {
+                        "submitters": [
+                                    "Steve"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Union City Blue, Blondie": {
+                        "submitters": [
+                                    "Shawn"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Blue Sky Mine, Midnight Oil": {
+                        "submitters": [
+                                    "Dave"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Two Blue Eyes, Beirut": {
+                        "submitters": [
+                                    "Stan"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Blue Hotel, Chris Issac": {
+                        "submitters": [
+                                    "Jem"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "True Blue, Madonna": {
+                        "submitters": [
+                                    "Paul"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Subterranean Homesick Blues, Bob Dylan": {
+                        "submitters": [
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Blue Lines, Massive Attack": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Pale Blue Eyes, Velvet Underground": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Cool Blue Reason, Cake": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Sky Blue Sky, Wilco": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Blue, NewDad": {
+                        "submitters": [
+                                    "Paul"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Ocean, Pearl Jam": {
+                        "submitters": [
+                                    "Dave"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "Folsom Prison Blues, Johnny Cash": {
+                        "submitters": [
+                                    "Shawn"
+                        ],
+                        "final_placement": null,
+                        "colour": "blue"
+            },
+            "I Heard It Through the Grapevine, Marvin Gaye": {
+                        "submitters": [
+                                    "Steve",
+                                    "Paul"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Indigo, Peter Gabriel": {
+                        "submitters": [
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "I Sat by the Ocean, Queens of the Stone Age": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Grapes Of Wrath, The Mission": {
+                        "submitters": [
+                                    "Shawn"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Dusk Till Dawn, Ladyhawke": {
+                        "submitters": [
+                                    "Stan"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Lavender, Marillion": {
+                        "submitters": [
+                                    "Dave",
+                                    "Tony",
+                                    "Steve"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Atlantic Ocean, Waterfall": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Mood Indigo, Duke Ellington": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Jeans On, David Dundas": {
+                        "submitters": [
+                                    "Shawn"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Isn't it Midnight, Fleetwood Mac": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Bye Bye Bad Man, The Stone Roses": {
+                        "submitters": [
+                                    "Jem"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Indigo Eyes, Peter Murphy": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Oily Water, Blur": {
+                        "submitters": [
+                                    "Stan"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "The Sea, Morcheeba": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "The Deepest Blues Are Black, Foo Fighters": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "An Ocean In Between the Waves, The War on Drugs": {
+                        "submitters": [
+                                    "Jem"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Purple, Hollow Coves": {
+                        "submitters": [
+                                    "Dave"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Indigo, Sam Barber": {
+                        "submitters": [
+                                    "Paul"
+                        ],
+                        "final_placement": null,
+                        "colour": "indigo"
+            },
+            "Purple Prose, The Mystery Jets": {
+                        "submitters": [
+                                    "Stan"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Purple, Wunderhorse": {
+                        "submitters": [
+                                    "Paul"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Manganese, Roger Eno, Brian Eno": {
+                        "submitters": [
+                                    "Shawn"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Iris, The Goo Goo Dolls": {
+                        "submitters": [
+                                    "Dave"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Start Wearing Purple, Gogol Bordello": {
+                        "submitters": [
+                                    "Stan"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "The Lilac and the Apple, Kate Wolf": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Purple Heather, Van Morrison": {
+                        "submitters": [
+                                    "Jem"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Pretty in Pink, Psychedelic Furs": {
+                        "submitters": [
+                                    "Steve"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "A Violet Fluid, Nine Inch Nails": {
+                        "submitters": [
+                                    "Shawn"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "The Violet Hour, Sea Wolf": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Lavender Hill, The Kinks": {
+                        "submitters": [
+                                    "Paul"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Violet, Hole": {
+                        "submitters": [
+                                    "Dave"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Grace Kelly, Mika": {
+                        "submitters": [
+                                    "Mark"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Sweet Violets, The Sons of the Pioneers": {
+                        "submitters": [
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Violet Blue, Duke Ellington": {
+                        "submitters": [
+                                    "Tony"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Ultraviolet (Light My Way), U2": {
+                        "submitters": [
+                                    "Justin"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Pretty Flamingo, Manfred Mann": {
+                        "submitters": [
+                                    "Steve"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Violets for Your Furs, Billie Holiday": {
+                        "submitters": [
+                                    "Ian"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            },
+            "Lilac Wine, Nina Simone": {
+                        "submitters": [
+                                    "Jem"
+                        ],
+                        "final_placement": null,
+                        "colour": "violet"
+            }
+};
+
+
         const allData = {
             red: {
                 labels: [
@@ -459,9 +1461,27 @@
                         tooltip: {
                             callbacks: {
                                 afterLabel: function(context) {
-                                    const stdev = chartStdevs[context.dataIndex];
-                                    return 'Std dev: ' + stdev.toFixed(2);
+                                const stdev = chartStdevs[context.dataIndex];
+                                const songLabel = context.label;
+                                
+                                // Look up submission info
+                                let lines = ['Std dev: ' + stdev.toFixed(2)];
+                                
+                                if (submissionsMap[songLabel]) {
+                                    const submitters = submissionsMap[songLabel].submitters;
+                                    const finalPlacement = submissionsMap[songLabel].final_placement;
+                                    
+                                    if (submitters && submitters.length > 0) {
+                                        lines.push('Submitted by: ' + submitters.join(', '));
+                                    }
+                                    
+                                    if (finalPlacement) {
+                                        lines.push('Final placement: #' + finalPlacement);
+                                    }
                                 }
+                                
+                                return lines;
+                            }
                             }
                         }
                     },
