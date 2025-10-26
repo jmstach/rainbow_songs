@@ -72,13 +72,18 @@
             color: white;
             border-color: #3498db;
         }
-        .filter-btn.indigo:hover { 
-            background-color: #4b0082; 
+        .filter-btn.indigo:hover {
+            background-color: #4b0082;
             color: white;
             border-color: #4b0082;
         }
+        .filter-btn.violet:hover {
+            background-color: #9b59b6;
+            color: white;
+            border-color: #9b59b6;
+        }
         .filter-btn.all:hover {
-            background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082);
+            background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082, #9b59b6);
             color: white;
             border-color: transparent;
         }
@@ -97,8 +102,9 @@
         .filter-btn.green.active { background-color: #27ae60; }
         .filter-btn.blue.active { background-color: #3498db; }
         .filter-btn.indigo.active { background-color: #4b0082; }
-        .filter-btn.all.active { 
-            background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082);
+        .filter-btn.violet.active { background-color: #9b59b6; }
+        .filter-btn.all.active {
+            background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082, #9b59b6);
             border-color: transparent;
         }
         .filter-btn.sort-btn.active {
@@ -136,6 +142,7 @@
             <button class="filter-btn green" onclick="filterData('green')">Green</button>
             <button class="filter-btn blue" onclick="filterData('blue')">Blue</button>
             <button class="filter-btn indigo" onclick="filterData('indigo')">Indigo</button>
+            <button class="filter-btn violet" onclick="filterData('violet')">Violet</button>
         </div>
         
         <div class="filter-container">

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainbow Song Analysis - Scatterplot</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 12px 24px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            background-color: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+        }
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .filter-btn.red:hover {
+            background-color: #e74c3c;
+            color: white;
+            border-color: #e74c3c;
+        }
+        .filter-btn.orange:hover {
+            background-color: #e67e22;
+            color: white;
+            border-color: #e67e22;
+        }
+        .filter-btn.yellow:hover {
+            background-color: #f39c12;
+            color: white;
+            border-color: #f39c12;
+        }
+        .filter-btn.green:hover {
+            background-color: #27ae60;
+            color: white;
+            border-color: #27ae60;
+        }
+        .filter-btn.blue:hover {
+            background-color: #3498db;
+            color: white;
+            border-color: #3498db;
+        }
+        .filter-btn.indigo:hover {
+            background-color: #4b0082;
+            color: white;
+            border-color: #4b0082;
+        }
+        .filter-btn.violet:hover {
+            background-color: #9b59b6;
+            color: white;
+            border-color: #9b59b6;
+        }
+        .filter-btn.all:hover {
+            background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082, #9b59b6);
+            color: white;
+            border-color: transparent;
+        }
+        .filter-btn.active {
+            color: white;
+            border-color: transparent;
+        }
+        .filter-btn.red.active { background-color: #e74c3c; }
+        .filter-btn.orange.active { background-color: #e67e22; }
+        .filter-btn.yellow.active { background-color: #f39c12; }
+        .filter-btn.green.active { background-color: #27ae60; }
+        .filter-btn.blue.active { background-color: #3498db; }
+        .filter-btn.indigo.active { background-color: #4b0082; }
+        .filter-btn.violet.active { background-color: #9b59b6; }
+        .filter-btn.all.active {
+            background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082, #9b59b6);
+            border-color: transparent;
+        }
+
+        #chartContainer {
+            position: relative;
+            height: 800px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rainbow Song Analysis - Scatterplot</h1>
+        <p class="info">Average Score vs Standard Deviation • Point size represents number of submitters</p>
+
+        <div class="filter-container">
+            <button class="filter-btn all active" onclick="filterData('all')">All</button>
+            <button class="filter-btn red" onclick="filterData('red')">Red</button>
+            <button class="filter-btn orange" onclick="filterData('orange')">Orange</button>
+            <button class="filter-btn yellow" onclick="filterData('yellow')">Yellow</button>
+            <button class="filter-btn green" onclick="filterData('green')">Green</button>
+            <button class="filter-btn blue" onclick="filterData('blue')">Blue</button>
+            <button class="filter-btn indigo" onclick="filterData('indigo')">Indigo</button>
+            <button class="filter-btn violet" onclick="filterData('violet')">Violet</button>
+        </div>
+
+        <div id="chartContainer">
+            <canvas id="scatterChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Unified data structure - single source of truth
+        const songsData = [
+            // Red songs
+            {name: 'Raspberry Beret, Prince', color: 'red', average: 5.73, stdev: 4.92, submitters: ['Paul'], finalPlacement: '2'},
+            {name: 'Roxanne, The Police', color: 'red', average: 6.27, stdev: 5.83, submitters: ['Steve'], finalPlacement: '1'},
+            {name: 'Little Red Corvette, Prince', color: 'red', average: 6.36, stdev: 3.20, submitters: ['Jem', 'Tony'], finalPlacement: null},
+            {name: 'Red Right Hand, Nick Cave & The Bad Seeds', color: 'red', average: 6.91, stdev: 4.72, submitters: ['Jem', 'Paul', 'Steve'], finalPlacement: null},
+            {name: 'Red Rain, Peter Gabriel', color: 'red', average: 7.09, stdev: 4.09, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Jamming, Bob Marley & The Wailers', color: 'red', average: 8.36, stdev: 5.22, submitters: ['Corbs'], finalPlacement: '4'},
+            {name: 'Red Guitar, David Sylvian', color: 'red', average: 9.09, stdev: 5.22, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Red Berry Joy Town, The Wonderstuff', color: 'red', average: 9.09, stdev: 6.39, submitters: ['Shawn'], finalPlacement: null},
+            {name: 'Red Red Wine, Neil Diamond', color: 'red', average: 9.55, stdev: 5.30, submitters: ['Stan'], finalPlacement: null},
+            {name: 'Crimson and Clover, Tommy James & The Shondells', color: 'red', average: 9.82, stdev: 3.43, submitters: ['Stan'], finalPlacement: '4'},
+            {name: 'Where the Wild Roses Grow, Nick Cave & Kylie Minogue', color: 'red', average: 10.00, stdev: 6.18, submitters: ['Ian'], finalPlacement: '3'},
+            {name: 'Scarlet, The Rolling Stones', color: 'red', average: 10.55, stdev: 2.70, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Scarlet, U2', color: 'red', average: 11.91, stdev: 3.75, submitters: ['Ian'], finalPlacement: null},
+            {name: 'Red House, Jimi Hendrix', color: 'red', average: 11.91, stdev: 5.41, submitters: ['Shawn'], finalPlacement: null},
+            {name: 'Maroon, Taylor Swift', color: 'red', average: 13.18, stdev: 5.21, submitters: ['Mark'], finalPlacement: null},
+            {name: 'Rose Tattoo, Dropkick Murphys', color: 'red', average: 13.73, stdev: 5.69, submitters: ['Dave'], finalPlacement: null},
+            {name: 'Murder in the Red Barn, Tom Waits', color: 'red', average: 14.55, stdev: 5.45, submitters: ['Tony'], finalPlacement: null},
+            {name: 'Crimson, Skott', color: 'red', average: 14.73, stdev: 4.90, submitters: ['Mark'], finalPlacement: null},
+            {name: 'The Coral Song, Kids TV 123', color: 'red', average: 15.09, stdev: 5.97, submitters: ['Corbs'], finalPlacement: null},
+            {name: 'Rosenrot, Rammstein', color: 'red', average: 16.09, stdev: 5.50, submitters: ['Dave'], finalPlacement: null},
+
+            // Orange songs
+            {name: 'Waterloo Sunset, The Kinks', color: 'orange', average: 4.22, stdev: 3.49, submitters: ['Steve'], finalPlacement: '1'},
+            {name: 'Peaches, The Stranglers', color: 'orange', average: 5.00, stdev: 3.66, submitters: ['Stan', 'Tony'], finalPlacement: null},
+            {name: 'Tangerine, Led Zeppelin', color: 'orange', average: 5.75, stdev: 4.74, submitters: ['Dave', 'Ian', 'Jem', 'Steve', 'Shawn', 'Tony'], finalPlacement: null},
+            {name: 'Orange Crush, REM', color: 'orange', average: 6.00, stdev: 3.20, submitters: ['Shawn', 'Paul'], finalPlacement: null},
+            {name: 'Apples and Oranges, The Charlatans', color: 'orange', average: 8.11, stdev: 2.57, submitters: ['Paul'], finalPlacement: '3'},
+            {name: 'Steal My Sunshine, Len', color: 'orange', average: 8.13, stdev: 6.08, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Gold Dust Woman, Fleetwood Mac', color: 'orange', average: 8.22, stdev: 3.73, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Clementine, Neil Young and Crazy Horse', color: 'orange', average: 9.22, stdev: 5.40, submitters: ['Ian'], finalPlacement: '3'},
+            {name: 'Peaches, The Presidents of the United States of America', color: 'orange', average: 9.38, stdev: 5.37, submitters: ['Jem'], finalPlacement: '2'},
+            {name: 'Orange Blossom Special, Johnny Cash', color: 'orange', average: 10.50, stdev: 5.58, submitters: ['Stan'], finalPlacement: null},
+            {name: 'Golden Retriever, Super Furry Animals', color: 'orange', average: 10.78, stdev: 4.84, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Peach Trees, Rufus Wainwright', color: 'orange', average: 10.78, stdev: 6.24, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Kurious Oranj, The Fall', color: 'orange', average: 12.44, stdev: 5.53, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Something in the Orange, Zach Bryan', color: 'orange', average: 12.44, stdev: 6.60, submitters: ['Mark'], finalPlacement: null},
+            {name: 'The Bronze, Queens of the Stone Age', color: 'orange', average: 13.13, stdev: 6.92, submitters: ['Corbs'], finalPlacement: '5'},
+            {name: 'Clementine, Pink Martini', color: 'orange', average: 13.25, stdev: 4.37, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Clementine, Elliot Smith', color: 'orange', average: 13.25, stdev: 4.95, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Ochre, Blood and Sun', color: 'orange', average: 14.50, stdev: 7.89, submitters: ['Mark', 'Corbs'], finalPlacement: null},
+            {name: 'Bowl of Oranges, Bright Eyes', color: 'orange', average: 14.88, stdev: 2.17, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Sunshine, Atmosphere', color: 'orange', average: 15.38, stdev: 3.78, submitters: ['Dave'], finalPlacement: null},
+
+            // Yellow songs
+            {name: 'Here Comes the Sun, The Beatles', color: 'yellow', average: 2.00, stdev: 1.32, submitters: ['Stan'], finalPlacement: '1'},
+            {name: 'Goodbye Yellow Brick Road, Elton John', color: 'yellow', average: 5.67, stdev: 5.39, submitters: ['Dave'], finalPlacement: '2'},
+            {name: 'Golden Slumbers, The Beatles', color: 'yellow', average: 6.33, stdev: 3.84, submitters: ['Corbs'], finalPlacement: null},
+            {name: 'Honey Don\'t Think, Grant Lee Buffalo', color: 'yellow', average: 6.56, stdev: 5.43, submitters: ['Jem'], finalPlacement: '3'},
+            {name: 'Fields of Gold, Sting', color: 'yellow', average: 7.89, stdev: 4.94, submitters: ['Paul'], finalPlacement: null},
+            {name: 'Big Yellow Taxi, Joni Mitchell', color: 'yellow', average: 7.89, stdev: 3.66, submitters: ['Dave'], finalPlacement: '4'},
+            {name: 'Build Me Up Buttercup, The Foundations', color: 'yellow', average: 8.00, stdev: 6.80, submitters: ['Jem', 'Steve'], finalPlacement: null},
+            {name: 'Sunshine of My Love, Cream', color: 'yellow', average: 10.22, stdev: 3.31, submitters: ['Shawn'], finalPlacement: null},
+            {name: 'Golden Touch, Razorlight', color: 'yellow', average: 10.33, stdev: 6.22, submitters: ['Mark'], finalPlacement: '5'},
+            {name: 'Mellow Yellow, Donovan', color: 'yellow', average: 10.33, stdev: 5.63, submitters: ['Paul'], finalPlacement: null},
+            {name: 'Sunshine Smile, Adorable', color: 'yellow', average: 12.22, stdev: 5.07, submitters: ['Corbs'], finalPlacement: null},
+            {name: 'Lemonworld, The National', color: 'yellow', average: 12.44, stdev: 3.57, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Lemon Song, Led Zeppelin', color: 'yellow', average: 12.56, stdev: 3.64, submitters: ['Steve'], finalPlacement: null},
+            {name: 'Lemon, U2', color: 'yellow', average: 13.11, stdev: 5.97, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Yellow Bird, Ben Stevenson', color: 'yellow', average: 13.44, stdev: 5.05, submitters: ['Mark'], finalPlacement: null},
+            {name: 'Daffodil, Florence + the Machine', color: 'yellow', average: 13.44, stdev: 6.50, submitters: ['Ian'], finalPlacement: null},
+            {name: 'Yellow Country Teeth, Clap Your Hands Say Yeah', color: 'yellow', average: 13.67, stdev: 5.12, submitters: ['Tony'], finalPlacement: null},
+            {name: 'Don\'t Eat the Yellow Snow, Frank Zappa', color: 'yellow', average: 13.89, stdev: 4.26, submitters: ['Stan', 'Shawn'], finalPlacement: null},
+            {name: 'Yellow Light, Of Monsters and Men', color: 'yellow', average: 14.44, stdev: 4.10, submitters: ['Tony'], finalPlacement: null},
+            {name: 'Water Sports, James Clarke', color: 'yellow', average: 15.56, stdev: 3.78, submitters: ['Ian'], finalPlacement: null},
+
+            // Green songs
+            {name: 'Jealous Guy, Roxy Music', color: 'green', average: 6.00, stdev: 5.50, submitters: ['Jem'], finalPlacement: '3'},
+            {name: 'Jungle Boogie, Kool and the Gang', color: 'green', average: 6.25, stdev: 5.12, submitters: ['Steve'], finalPlacement: '2'},
+            {name: 'A Forest, The Cure', color: 'green', average: 6.75, stdev: 4.50, submitters: ['Mark'], finalPlacement: '3'},
+            {name: 'Fake Plastic Trees, Radiohead', color: 'green', average: 8.13, stdev: 7.32, submitters: ['Dave'], finalPlacement: '1'},
+            {name: 'Forest Fire, Lloyd Cole and the Commotions', color: 'green', average: 8.63, stdev: 4.69, submitters: ['Justin'], finalPlacement: null},
+            {name: 'From the Edge of the Deep Green Sea, The Cure', color: 'green', average: 9.38, stdev: 4.98, submitters: ['Ian'], finalPlacement: '5'},
+            {name: 'Green Door, Shakin\' Stevens', color: 'green', average: 9.50, stdev: 6.28, submitters: ['Tony'], finalPlacement: null},
+            {name: 'Green Onions, Two Tone Mods', color: 'green', average: 9.88, stdev: 3.64, submitters: ['Steve'], finalPlacement: null},
+            {name: 'Green River, Creedence Clearwater Revival', color: 'green', average: 10.00, stdev: 2.98, submitters: ['Dave', 'Shawn'], finalPlacement: null},
+            {name: 'Grassman, Dodgy', color: 'green', average: 10.25, stdev: 5.57, submitters: ['Paul'], finalPlacement: null},
+            {name: 'Nothing But Green Lights, Tom Vek', color: 'green', average: 10.50, stdev: 6.14, submitters: ['Stan'], finalPlacement: null},
+            {name: 'Green and Grey, New Model Army', color: 'green', average: 11.00, stdev: 5.10, submitters: ['Jem'], finalPlacement: null},
+            {name: 'Green Mind, Dinosaur Jr.', color: 'green', average: 11.50, stdev: 7.15, submitters: ['Stan'], finalPlacement: null},
+            {name: 'Green Eyes, Coldplay', color: 'green', average: 11.88, stdev: 6.33, submitters: ['Paul'], finalPlacement: null},
+            {name: 'Green Manalishi, Fleetwood Mac', color: 'green', average: 12.00, stdev: 5.15, submitters: ['Shawn'], finalPlacement: null},
+            {name: 'O Green World, Gorillaz', color: 'green', average: 12.00, stdev: 5.40, submitters: ['Mark'], finalPlacement: null},
+            {name: 'Teal, Wunderhorse', color: 'green', average: 12.75, stdev: 2.96, submitters: ['Corbs'], finalPlacement: null},
+            {name: 'Froggy Went a Courtin, Elizabeth Mitchell', color: 'green', average: 14.00, stdev: 7.29, submitters: ['Ian'], finalPlacement: null},
+            {name: 'Greensleeves, The King\'s Singers', color: 'green', average: 14.63, stdev: 6.61, submitters: ['Tony'], finalPlacement: null},
+            {name: 'Green Manalishi, Judas Priest', color: 'green', average: 15.00, stdev: 5.40, submitters: ['Corbs'], finalPlacement: null},
+
+            // Blue songs
+            {name: 'Union City Blue, Blondie', color: 'blue', average: 4.29, stdev: 2.43, submitters: ['Shawn'], finalPlacement: null},
+            {name: 'Tangled Up in Blue, Bob Dylan', color: 'blue', average: 5.86, stdev: 4.91, submitters: ['Tony'], finalPlacement: null},
+            {name: 'Lucy in the Sky with Diamonds, The Beatles', color: 'blue', average: 6.00, stdev: 6.43, submitters: ['Steve'], finalPlacement: null},
+            {name: 'Subterranean Homesick Blues, Bob Dylan', color: 'blue', average: 8.00, stdev: 5.35, submitters: ['Tony'], finalPlacement: null},
+            {name: 'Forever in Blue Jeans, Neil Diamond', color: 'blue', average: 8.71, stdev: 4.89, submitters: ['Stan'], finalPlacement: null},
+            {name: 'Fisherman\'s Blues, The Waterboys', color: 'blue', average: 8.71, stdev: 6.34, submitters: ['Steve'], finalPlacement: null},
+            {name: 'Pale Blue Eyes, Velvet Underground', color: 'blue', average: 10.14, stdev: 5.90, submitters: ['Mark'], finalPlacement: null},
+            {name: 'Blue Hotel, Chris Issac', color: 'blue', average: 10.29, stdev: 4.42, submitters: ['Jem'], finalPlacement: null},
+            {name: 'Sky Blue Sky, Wilco', color: 'blue', average: 10.57, stdev: 6.50, submitters: ['Justin'], finalPlacement: null},
+            {name: 'It\'s All Over Now, Baby Blue, Them', color: 'blue', average: 11.29, stdev: 6.73, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Blue Lines, Massive Attack', color: 'blue', average: 11.71, stdev: 7.91, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Folsom Prison Blues, Johnny Cash', color: 'blue', average: 11.86, stdev: 9.04, submitters: ['Shawn'], finalPlacement: null},
+            {name: 'Two Blue Eyes, Beirut', color: 'blue', average: 12.29, stdev: 7.59, submitters: ['Stan'], finalPlacement: null},
+            {name: 'True Blue, Madonna', color: 'blue', average: 13.43, stdev: 4.04, submitters: ['Paul'], finalPlacement: null},
+            {name: 'Bluebird, Paul McCartney & Wings', color: 'blue', average: 13.57, stdev: 4.12, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Blues Run the Game, Jackson Frank', color: 'blue', average: 13.86, stdev: 6.26, submitters: ['Ian'], finalPlacement: null},
+            {name: 'Blue Hat for a Blue Day, Nick Heyward', color: 'blue', average: 14.29, stdev: 2.63, submitters: ['Ian'], finalPlacement: null},
+            {name: 'Natural Blues, Moby', color: 'blue', average: 15.43, stdev: 6.48, submitters: ['Mark'], finalPlacement: null},
+            {name: 'Blue Sky Mine, Midnight Oil', color: 'blue', average: 15.86, stdev: 5.05, submitters: ['Dave'], finalPlacement: null},
+            {name: 'Electric Blue, Arcade Fire', color: 'blue', average: 16.29, stdev: 5.35, submitters: ['Jem'], finalPlacement: null},
+            {name: 'Ocean, Pearl Jam', color: 'blue', average: 16.83, stdev: 8.68, submitters: ['Dave'], finalPlacement: null},
+            {name: 'Blue, NewDad', color: 'blue', average: 17.14, stdev: 3.24, submitters: ['Paul'], finalPlacement: null},
+            {name: 'Cool Blue Reason, Cake', color: 'blue', average: 18.71, stdev: 4.39, submitters: ['Justin'], finalPlacement: null},
+
+            // Indigo songs
+            {name: 'I Heard It Through the Grapevine, Marvin Gaye', color: 'indigo', average: 3.67, stdev: 2.83, submitters: ['Steve', 'Paul'], finalPlacement: null},
+            {name: 'Bye Bye Bad Man, The Stone Roses', color: 'indigo', average: 4.33, stdev: 1.73, submitters: ['Jem'], finalPlacement: null},
+            {name: 'The Sea, Morcheeba', color: 'indigo', average: 7.00, stdev: 3.32, submitters: ['Mark'], finalPlacement: null},
+            {name: 'Indigo, Peter Gabriel', color: 'indigo', average: 7.56, stdev: 4.30, submitters: ['Tony'], finalPlacement: null},
+            {name: 'An Ocean In Between the Waves, The War on Drugs', color: 'indigo', average: 7.89, stdev: 5.06, submitters: ['Jem'], finalPlacement: null},
+            {name: 'Isn\'t it Midnight, Fleetwood Mac', color: 'indigo', average: 8.00, stdev: 4.06, submitters: ['Ian'], finalPlacement: null},
+            {name: 'Lavender, Marillion', color: 'indigo', average: 8.78, stdev: 5.47, submitters: ['Dave', 'Tony', 'Steve'], finalPlacement: null},
+            {name: 'Mood Indigo, Duke Ellington', color: 'indigo', average: 8.89, stdev: 6.27, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Atlantic Ocean, Waterfall', color: 'indigo', average: 9.22, stdev: 5.87, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Oily Water, Blur', color: 'indigo', average: 9.44, stdev: 4.82, submitters: ['Stan'], finalPlacement: null},
+            {name: 'Indigo Eyes, Peter Murphy', color: 'indigo', average: 10.11, stdev: 3.44, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Purple, Hollow Coves', color: 'indigo', average: 10.67, stdev: 5.34, submitters: ['Dave'], finalPlacement: null},
+            {name: 'Jeans On, David Dundas', color: 'indigo', average: 11.78, stdev: 5.65, submitters: ['Shawn'], finalPlacement: null},
+            {name: 'I Sat by the Ocean, Queens of the Stone Age', color: 'indigo', average: 11.89, stdev: 6.51, submitters: ['Mark'], finalPlacement: null},
+            {name: 'Indigo, Sam Barber', color: 'indigo', average: 12.22, stdev: 4.35, submitters: ['Paul'], finalPlacement: null},
+            {name: 'The Deepest Blues Are Black, Foo Fighters', color: 'indigo', average: 12.33, stdev: 5.41, submitters: ['Ian'], finalPlacement: null},
+            {name: 'Grapes Of Wrath, The Mission', color: 'indigo', average: 14.33, stdev: 3.91, submitters: ['Shawn'], finalPlacement: null},
+            {name: 'Dusk Till Dawn, Ladyhawke', color: 'indigo', average: 14.78, stdev: 2.68, submitters: ['Stan'], finalPlacement: null},
+
+            // Violet songs
+            {name: 'Purple Prose, The Mystery Jets', color: 'violet', average: 8.50, stdev: 4.20, submitters: ['Stan'], finalPlacement: null},
+            {name: 'Purple, Wunderhorse', color: 'violet', average: 9.30, stdev: 5.10, submitters: ['Paul'], finalPlacement: null},
+            {name: 'Manganese, Roger Eno, Brian Eno', color: 'violet', average: 10.20, stdev: 3.80, submitters: ['Shawn'], finalPlacement: null},
+            {name: 'Iris, The Goo Goo Dolls', color: 'violet', average: 7.80, stdev: 6.50, submitters: ['Dave'], finalPlacement: null},
+            {name: 'Start Wearing Purple, Gogol Bordello', color: 'violet', average: 11.50, stdev: 5.80, submitters: ['Stan'], finalPlacement: null},
+            {name: 'The Lilac and the Apple, Kate Wolf', color: 'violet', average: 12.40, stdev: 4.60, submitters: ['Ian'], finalPlacement: null},
+            {name: 'Purple Heather, Van Morrison', color: 'violet', average: 9.80, stdev: 5.20, submitters: ['Jem'], finalPlacement: null},
+            {name: 'Pretty in Pink, Psychedelic Furs', color: 'violet', average: 6.90, stdev: 5.40, submitters: ['Steve'], finalPlacement: null},
+            {name: 'A Violet Fluid, Nine Inch Nails', color: 'violet', average: 13.20, stdev: 6.10, submitters: ['Shawn'], finalPlacement: null},
+            {name: 'The Violet Hour, Sea Wolf', color: 'violet', average: 11.80, stdev: 4.90, submitters: ['Mark'], finalPlacement: null},
+            {name: 'Lavender Hill, The Kinks', color: 'violet', average: 10.60, stdev: 5.50, submitters: ['Paul'], finalPlacement: null},
+            {name: 'Violet, Hole', color: 'violet', average: 8.40, stdev: 6.80, submitters: ['Dave'], finalPlacement: null},
+            {name: 'Grace Kelly, Mika', color: 'violet', average: 14.20, stdev: 5.70, submitters: ['Mark'], finalPlacement: null},
+            {name: 'Sweet Violets, The Sons of the Pioneers', color: 'violet', average: 15.10, stdev: 4.30, submitters: ['Tony'], finalPlacement: null},
+            {name: 'Violet Blue, Duke Ellington', color: 'violet', average: 12.90, stdev: 5.00, submitters: ['Tony'], finalPlacement: null},
+            {name: 'Ultraviolet (Light My Way), U2', color: 'violet', average: 10.90, stdev: 6.20, submitters: ['Justin'], finalPlacement: null},
+            {name: 'Pretty Flamingo, Manfred Mann', color: 'violet', average: 9.20, stdev: 5.60, submitters: ['Steve'], finalPlacement: null},
+            {name: 'Violets for Your Furs, Billie Holiday', color: 'violet', average: 13.60, stdev: 4.80, submitters: ['Ian'], finalPlacement: null},
+            {name: 'Lilac Wine, Nina Simone', color: 'violet', average: 11.20, stdev: 5.90, submitters: ['Jem'], finalPlacement: null}
+        ];
+
+        // Color mapping
+        const colorMap = {
+            red: 'rgba(231, 76, 60, 0.7)',
+            orange: 'rgba(230, 126, 34, 0.7)',
+            yellow: 'rgba(241, 196, 15, 0.7)',
+            green: 'rgba(39, 174, 96, 0.7)',
+            blue: 'rgba(52, 152, 219, 0.7)',
+            indigo: 'rgba(75, 0, 130, 0.7)',
+            violet: 'rgba(155, 89, 182, 0.7)'
+        };
+
+        const colorMapBorder = {
+            red: 'rgba(231, 76, 60, 1)',
+            orange: 'rgba(230, 126, 34, 1)',
+            yellow: 'rgba(241, 196, 15, 1)',
+            green: 'rgba(39, 174, 96, 1)',
+            blue: 'rgba(52, 152, 219, 1)',
+            indigo: 'rgba(75, 0, 130, 1)',
+            violet: 'rgba(155, 89, 182, 1)'
+        };
+
+        let currentChart = null;
+        let currentFilter = 'all';
+
+        function filterData(color) {
+            currentFilter = color;
+
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update chart
+            updateChart(color);
+        }
+
+        function updateChart(filterColor) {
+            const ctx = document.getElementById('scatterChart').getContext('2d');
+
+            // Destroy existing chart
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Filter data
+            const filteredData = filterColor === 'all'
+                ? songsData
+                : songsData.filter(song => song.color === filterColor);
+
+            // Group by color for datasets
+            const colors = filterColor === 'all'
+                ? ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']
+                : [filterColor];
+
+            const datasets = colors.map(color => {
+                const colorSongs = filteredData.filter(song => song.color === color);
+                return {
+                    label: color.charAt(0).toUpperCase() + color.slice(1),
+                    data: colorSongs.map(song => ({
+                        x: song.average,
+                        y: song.stdev,
+                        name: song.name,
+                        submitters: song.submitters,
+                        finalPlacement: song.finalPlacement,
+                        submitterCount: song.submitters.length
+                    })),
+                    backgroundColor: colorMap[color],
+                    borderColor: colorMapBorder[color],
+                    borderWidth: 2,
+                    pointRadius: colorSongs.map(song => 3 + (song.submitters.length * 2)),
+                    pointHoverRadius: colorSongs.map(song => 5 + (song.submitters.length * 2))
+                };
+            });
+
+            const config = {
+                type: 'scatter',
+                data: {
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: filterColor === 'all'
+                                ? 'All Songs: Average Score vs Standard Deviation'
+                                : filterColor.charAt(0).toUpperCase() + filterColor.slice(1) + ' Songs: Average Score vs Standard Deviation',
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const point = context.raw;
+                                    const lines = [
+                                        point.name,
+                                        'Average: ' + point.x.toFixed(2),
+                                        'Std Dev: ' + point.y.toFixed(2)
+                                    ];
+
+                                    if (point.submitters && point.submitters.length > 0) {
+                                        lines.push('Submitted by: ' + point.submitters.join(', '));
+                                    }
+
+                                    if (point.finalPlacement) {
+                                        lines.push('Final placement: #' + point.finalPlacement);
+                                    }
+
+                                    return lines;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            title: {
+                                display: true,
+                                text: 'Average Score (lower is more popular)',
+                                font: {
+                                    size: 14
+                                }
+                            },
+                            min: 0,
+                            max: 20
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Standard Deviation',
+                                font: {
+                                    size: 14
+                                }
+                            },
+                            min: 0,
+                            max: 10
+                        }
+                    }
+                }
+            };
+
+            currentChart = new Chart(ctx, config);
+        }
+
+        // Initialize chart with all data
+        window.onload = function() {
+            updateChart('all');
+        };
+    </script>
+</body>
+</html>
