@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainbow Song Voting Heatmap</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 12px 24px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            background-color: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+        }
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .filter-btn.red:hover { background-color: #e74c3c; color: white; border-color: #e74c3c; }
+        .filter-btn.orange:hover { background-color: #e67e22; color: white; border-color: #e67e22; }
+        .filter-btn.yellow:hover { background-color: #f39c12; color: white; border-color: #f39c12; }
+        .filter-btn.green:hover { background-color: #27ae60; color: white; border-color: #27ae60; }
+        .filter-btn.blue:hover { background-color: #3498db; color: white; border-color: #3498db; }
+        .filter-btn.indigo:hover { background-color: #4b0082; color: white; border-color: #4b0082; }
+        .filter-btn.all:hover {
+            background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082);
+            color: white;
+            border-color: transparent;
+        }
+        .filter-btn.active { color: white; border-color: transparent; }
+        .filter-btn.red.active { background-color: #e74c3c; }
+        .filter-btn.orange.active { background-color: #e67e22; }
+        .filter-btn.yellow.active { background-color: #f39c12; }
+        .filter-btn.green.active { background-color: #27ae60; }
+        .filter-btn.blue.active { background-color: #3498db; }
+        .filter-btn.indigo.active { background-color: #4b0082; }
+        .filter-btn.all.active {
+            background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082);
+            border-color: transparent;
+        }
+
+        #chartContainer {
+            position: relative;
+            height: 1200px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        #chartContainer.all-view {
+            height: 3000px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rainbow Song Voting Heatmap</h1>
+        <p class="info">Individual voter rankings • Darker colors = lower ranking (more preferred)</p>
+
+        <div class="filter-container">
+            <button class="filter-btn all active" onclick="filterData('all')">All</button>
+            <button class="filter-btn red" onclick="filterData('red')">Red</button>
+            <button class="filter-btn orange" onclick="filterData('orange')">Orange</button>
+            <button class="filter-btn yellow" onclick="filterData('yellow')">Yellow</button>
+            <button class="filter-btn green" onclick="filterData('green')">Green</button>
+            <button class="filter-btn blue" onclick="filterData('blue')">Blue</button>
+            <button class="filter-btn indigo" onclick="filterData('indigo')">Indigo</button>
+        </div>
+
+        <div id="chartContainer">
+            <canvas id="heatmapChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let votingData = null;
+        let currentChart = null;
+        let currentFilter = 'all';
+
+        // Load the voting data
+        fetch('voting_data_all.json')
+            .then(response => response.json())
+            .then(data => {
+                votingData = data;
+                updateChart('all');
+            });
+
+        function filterData(color) {
+            currentFilter = color;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const container = document.getElementById('chartContainer');
+            if (color === 'all') {
+                container.classList.add('all-view');
+            } else {
+                container.classList.remove('all-view');
+            }
+
+            updateChart(color);
+        }
+
+        function updateChart(filterColor) {
+            if (!votingData) return;
+
+            const ctx = document.getElementById('heatmapChart').getContext('2d');
+
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Filter songs by color
+            const filteredSongs = filterColor === 'all'
+                ? votingData.songs
+                : votingData.songs.filter(song => song.color === filterColor);
+
+            // Sort songs by average score
+            filteredSongs.sort((a, b) => {
+                const avgA = Object.values(a.scores).reduce((sum, v) => sum + v, 0) / Object.values(a.scores).length;
+                const avgB = Object.values(b.scores).reduce((sum, v) => sum + v, 0) / Object.values(b.scores).length;
+                return avgA - avgB;
+            });
+
+            // Create data points for matrix
+            const dataPoints = [];
+            const voters = [...new Set(filteredSongs.flatMap(song => Object.keys(song.scores)))];
+
+            filteredSongs.forEach((song, songIndex) => {
+                voters.forEach((voter, voterIndex) => {
+                    const score = song.scores[voter];
+                    if (score !== undefined) {
+                        dataPoints.push({
+                            x: voterIndex,
+                            y: songIndex,
+                            v: score,
+                            song: song.song,
+                            voter: voter
+                        });
+                    }
+                });
+            });
+
+            const config = {
+                type: 'matrix',
+                data: {
+                    datasets: [{
+                        label: 'Voter Rankings',
+                        data: dataPoints,
+                        backgroundColor(context) {
+                            const value = context.dataset.data[context.dataIndex].v;
+                            const alpha = 1 - ((value - 1) / 19); // Normalize to 0-1, inverted
+                            return `rgba(67, 97, 238, ${alpha})`;
+                        },
+                        borderWidth: 1,
+                        borderColor: 'rgba(255, 255, 255, 0.3)',
+                        width: ({chart}) => (chart.chartArea || {}).width / voters.length - 1,
+                        height: ({chart}) => (chart.chartArea || {}).height / filteredSongs.length - 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: (filterColor === 'all' ? 'All' : filterColor.charAt(0).toUpperCase() + filterColor.slice(1)) + ' Songs - Voter Rankings Heatmap',
+                            font: { size: 18, weight: 'bold' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title() {
+                                    return '';
+                                },
+                                label(context) {
+                                    const point = context.dataset.data[context.dataIndex];
+                                    return [
+                                        point.song,
+                                        `Voter: ${point.voter}`,
+                                        `Ranking: ${point.v}`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'category',
+                            labels: voters,
+                            offset: true,
+                            ticks: {
+                                display: true
+                            },
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            type: 'category',
+                            labels: filteredSongs.map(s => s.song),
+                            offset: true,
+                            ticks: {
+                                display: true,
+                                font: {
+                                    size: 10
+                                }
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            };
+
+            currentChart = new Chart(ctx, config);
+        }
+
+        window.onload = function() {
+            document.getElementById('chartContainer').classList.add('all-view');
+        };
+    </script>
+</body>
+</html>

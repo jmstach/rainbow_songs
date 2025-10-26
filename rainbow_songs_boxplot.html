@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainbow Song Box Plots</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@4.1.1/build/index.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 12px 24px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            background-color: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+        }
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .filter-btn.red:hover { background-color: #e74c3c; color: white; border-color: #e74c3c; }
+        .filter-btn.orange:hover { background-color: #e67e22; color: white; border-color: #e67e22; }
+        .filter-btn.yellow:hover { background-color: #f39c12; color: white; border-color: #f39c12; }
+        .filter-btn.green:hover { background-color: #27ae60; color: white; border-color: #27ae60; }
+        .filter-btn.blue:hover { background-color: #3498db; color: white; border-color: #3498db; }
+        .filter-btn.indigo:hover { background-color: #4b0082; color: white; border-color: #4b0082; }
+        .filter-btn.all:hover {
+            background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082);
+            color: white;
+            border-color: transparent;
+        }
+        .filter-btn.active { color: white; border-color: transparent; }
+        .filter-btn.red.active { background-color: #e74c3c; }
+        .filter-btn.orange.active { background-color: #e67e22; }
+        .filter-btn.yellow.active { background-color: #f39c12; }
+        .filter-btn.green.active { background-color: #27ae60; }
+        .filter-btn.blue.active { background-color: #3498db; }
+        .filter-btn.indigo.active { background-color: #4b0082; }
+        .filter-btn.all.active {
+            background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082);
+            border-color: transparent;
+        }
+
+        #chartContainer {
+            position: relative;
+            height: 900px;
+            margin-top: 20px;
+        }
+        #chartContainer.all-view {
+            height: 2800px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rainbow Song Box Plots</h1>
+        <p class="info">Distribution of rankings with quartiles • Box shows median, Q1, and Q3 • Whiskers extend to min/max</p>
+
+        <div class="filter-container">
+            <button class="filter-btn all active" onclick="filterData('all')">All</button>
+            <button class="filter-btn red" onclick="filterData('red')">Red</button>
+            <button class="filter-btn orange" onclick="filterData('orange')">Orange</button>
+            <button class="filter-btn yellow" onclick="filterData('yellow')">Yellow</button>
+            <button class="filter-btn green" onclick="filterData('green')">Green</button>
+            <button class="filter-btn blue" onclick="filterData('blue')">Blue</button>
+            <button class="filter-btn indigo" onclick="filterData('indigo')">Indigo</button>
+        </div>
+
+        <div id="chartContainer">
+            <canvas id="boxplotChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        let votingData = null;
+        let currentChart = null;
+        let currentFilter = 'all';
+
+        const colorMap = {
+            red: 'rgba(231, 76, 60, 0.7)',
+            orange: 'rgba(230, 126, 34, 0.7)',
+            yellow: 'rgba(241, 196, 15, 0.7)',
+            green: 'rgba(39, 174, 96, 0.7)',
+            blue: 'rgba(52, 152, 219, 0.7)',
+            indigo: 'rgba(75, 0, 130, 0.7)'
+        };
+
+        const colorMapBorder = {
+            red: 'rgba(231, 76, 60, 1)',
+            orange: 'rgba(230, 126, 34, 1)',
+            yellow: 'rgba(241, 196, 15, 1)',
+            green: 'rgba(39, 174, 96, 1)',
+            blue: 'rgba(52, 152, 219, 1)',
+            indigo: 'rgba(75, 0, 130, 1)'
+        };
+
+        // Load the voting data
+        fetch('voting_data_all.json')
+            .then(response => response.json())
+            .then(data => {
+                votingData = data;
+                updateChart('all');
+            });
+
+        function filterData(color) {
+            currentFilter = color;
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const container = document.getElementById('chartContainer');
+            if (color === 'all') {
+                container.classList.add('all-view');
+            } else {
+                container.classList.remove('all-view');
+            }
+
+            updateChart(color);
+        }
+
+        function updateChart(filterColor) {
+            if (!votingData) return;
+
+            const ctx = document.getElementById('boxplotChart').getContext('2d');
+
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Filter songs by color
+            let filteredSongs = filterColor === 'all'
+                ? votingData.songs
+                : votingData.songs.filter(song => song.color === filterColor);
+
+            // Sort songs by average score
+            filteredSongs.sort((a, b) => {
+                const avgA = Object.values(a.scores).reduce((sum, v) => sum + v, 0) / Object.values(a.scores).length;
+                const avgB = Object.values(b.scores).reduce((sum, v) => sum + v, 0) / Object.values(b.scores).length;
+                return avgA - avgB;
+            });
+
+            // Prepare data for box plot
+            const labels = filteredSongs.map(song => song.song);
+            const boxData = filteredSongs.map(song => Object.values(song.scores));
+            const colors = filteredSongs.map(song => colorMap[song.color]);
+            const borderColors = filteredSongs.map(song => colorMapBorder[song.color]);
+
+            const config = {
+                type: 'boxplot',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Rankings',
+                        data: boxData,
+                        backgroundColor: colors,
+                        borderColor: borderColors,
+                        borderWidth: 2,
+                        outlierColor: '#999999',
+                        padding: 10,
+                        itemRadius: 0
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: (filterColor === 'all' ? 'All' : filterColor.charAt(0).toUpperCase() + filterColor.slice(1)) + ' Songs - Distribution of Rankings',
+                            font: { size: 18, weight: 'bold' }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const stats = context.parsed;
+                                    return [
+                                        `Min: ${stats.min}`,
+                                        `Q1: ${stats.q1}`,
+                                        `Median: ${stats.median}`,
+                                        `Q3: ${stats.q3}`,
+                                        `Max: ${stats.max}`
+                                    ];
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 20,
+                            title: {
+                                display: true,
+                                text: 'Ranking (lower is more popular)',
+                                font: { size: 14 }
+                            },
+                            grid: { display: true }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: {
+                                font: { size: 10 }
+                            }
+                        }
+                    }
+                }
+            };
+
+            currentChart = new Chart(ctx, config);
+        }
+
+        window.onload = function() {
+            document.getElementById('chartContainer').classList.add('all-view');
+        };
+    </script>
+</body>
+</html>
