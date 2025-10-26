@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rainbow song popularity chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 12px 24px;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            background-color: white;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: capitalize;
+        }
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .filter-btn.red:hover { 
+            background-color: #e74c3c; 
+            color: white;
+            border-color: #e74c3c;
+        }
+        .filter-btn.orange:hover { 
+            background-color: #e67e22; 
+            color: white;
+            border-color: #e67e22;
+        }
+        .filter-btn.yellow:hover { 
+            background-color: #f39c12; 
+            color: white;
+            border-color: #f39c12;
+        }
+        .filter-btn.green:hover { 
+            background-color: #27ae60; 
+            color: white;
+            border-color: #27ae60;
+        }
+        .filter-btn.blue:hover { 
+            background-color: #3498db; 
+            color: white;
+            border-color: #3498db;
+        }
+        .filter-btn.indigo:hover { 
+            background-color: #4b0082; 
+            color: white;
+            border-color: #4b0082;
+        }
+        .filter-btn.all:hover {
+            background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082);
+            color: white;
+            border-color: transparent;
+        }
+        .filter-btn.sort-btn:hover {
+            background-color: #34495e;
+            color: white;
+            border-color: #34495e;
+        }
+        .filter-btn.active {
+            color: white;
+            border-color: transparent;
+        }
+        .filter-btn.red.active { background-color: #e74c3c; }
+        .filter-btn.orange.active { background-color: #e67e22; }
+        .filter-btn.yellow.active { background-color: #f39c12; }
+        .filter-btn.green.active { background-color: #27ae60; }
+        .filter-btn.blue.active { background-color: #3498db; }
+        .filter-btn.indigo.active { background-color: #4b0082; }
+        .filter-btn.all.active { 
+            background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082);
+            border-color: transparent;
+        }
+        .filter-btn.sort-btn.active {
+            background-color: #34495e;
+            color: white;
+            border-color: transparent;
+        }
+        
+        #chartContainer {
+            position: relative;
+            height: 800px;
+            margin-top: 20px;
+        }
+        #chartContainer.all-view {
+            height: 2400px;
+        }
+        .info {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Rainbow song popularity chart</h1>
+        <p class="info">Select a colour to view song rankings (lower average scores = more popular)</p>
+        
+        <div class="filter-container">
+            <button class="filter-btn all active" onclick="filterData('all')">All</button>
+            <button class="filter-btn red" onclick="filterData('red')">Red</button>
+            <button class="filter-btn orange" onclick="filterData('orange')">Orange</button>
+            <button class="filter-btn yellow" onclick="filterData('yellow')">Yellow</button>
+            <button class="filter-btn green" onclick="filterData('green')">Green</button>
+            <button class="filter-btn blue" onclick="filterData('blue')">Blue</button>
+            <button class="filter-btn indigo" onclick="filterData('indigo')">Indigo</button>
+        </div>
+        
+        <div class="filter-container">
+            <button class="filter-btn sort-btn active" onclick="changeSortMode('average')">Sort by average score</button>
+            <button class="filter-btn sort-btn" onclick="changeSortMode('stdev')">Sort by standard deviation</button>
+        </div>
+        
+        <div id="chartContainer">
+            <canvas id="popularityChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const allData = {
+            red: {
+                labels: [
+                    'Raspberry Beret, Prince',
+                    'Roxanne, The Police',
+                    'Little Red Corvette, Prince',
+                    'Red Right Hand, Nick Cave & The Bad Seeds',
+                    'Red Rain, Peter Gabriel',
+                    'Jamming, Bob Marley & The Wailers',
+                    'Red Guitar, David Sylvian',
+                    'Red Berry Joy Town, The Wonderstuff',
+                    'Red Red Wine, Neil Diamond',
+                    'Crimson and Clover, Tommy James & The Shondells',
+                    'Where the Wild Roses Grow, Nick Cave & Kylie Minogue',
+                    'Scarlet, The Rolling Stones',
+                    'Scarlet, U2',
+                    'Red House, Jimi Hendrix',
+                    'Maroon, Taylor Swift',
+                    'Rose Tattoo, Dropkick Murphys',
+                    'Murder in the Red Barn, Tom Waits',
+                    'Crimson, Skott',
+                    'The Coral Song, Kids TV 123',
+                    'Rosenrot, Rammstein'
+                ],
+                averages: [5.73, 6.27, 6.36, 6.91, 7.09, 8.36, 9.09, 9.09, 9.55, 9.82, 10.00, 10.55, 11.91, 11.91, 13.18, 13.73, 14.55, 14.73, 15.09, 16.09],
+                stdevs: [4.92, 5.83, 3.20, 4.72, 4.09, 5.22, 5.22, 6.39, 5.30, 3.43, 6.18, 2.70, 3.75, 5.41, 5.21, 5.69, 5.45, 4.90, 5.97, 5.50]
+            },
+            orange: {
+                labels: [
+                    'Waterloo Sunset, The Kinks',
+                    'Peaches, The Stranglers',
+                    'Tangerine, Led Zeppelin',
+                    'Orange Crush, REM',
+                    'Apples and Oranges, The Charlatans',
+                    'Steal My Sunshine, Len',
+                    'Gold Dust Woman, Fleetwood Mac',
+                    'Clementine, Neil Young and Crazy Horse',
+                    'Peaches, The Presidents of the United States of America',
+                    'Orange Blossom Special, Johnny Cash',
+                    'Golden Retriever, Super Furry Animals',
+                    'Peach Trees, Rufus Wainwright',
+                    'Kurious Oranj, The Fall',
+                    'Something in the Orange, Zach Bryan',
+                    'The Bronze, Queens of the Stone Age',
+                    'Clementine, Pink Martini',
+                    'Clementine, Elliot Smith',
+                    'Ochre, Blood and Sun',
+                    'Bowl of Oranges, Bright Eyes',
+                    'Sunshine, Atmosphere'
+                ],
+                averages: [4.22, 5.00, 5.75, 6.00, 8.11, 8.13, 8.22, 9.22, 9.38, 10.50, 10.78, 10.78, 12.44, 12.44, 13.13, 13.25, 13.25, 14.50, 14.88, 15.38],
+                stdevs: [3.49, 3.66, 4.74, 3.20, 2.57, 6.08, 3.73, 5.40, 5.37, 5.58, 4.84, 6.24, 5.53, 6.60, 6.92, 4.37, 4.95, 7.89, 2.17, 3.78]
+            },
+            yellow: {
+                labels: [
+                    'Here Comes the Sun, The Beatles',
+                    'Goodbye Yellow Brick Road, Elton John',
+                    'Golden Slumbers, The Beatles',
+                    'Honey Don\'t Think, Grant Lee Buffalo',
+                    'Fields of Gold, Sting',
+                    'Big Yellow Taxi, Joni Mitchell',
+                    'Build Me Up Buttercup, The Foundations',
+                    'Sunshine of My Love, Cream',
+                    'Golden Touch, Razorlight',
+                    'Mellow Yellow, Donovan',
+                    'Sunshine Smile, Adorable',
+                    'Lemonworld, The National',
+                    'Lemon Song, Led Zeppelin',
+                    'Lemon, U2',
+                    'Yellow Bird, Ben Stevenson',
+                    'Daffodil, Florence + the Machine',
+                    'Yellow Country Teeth, Clap Your Hands Say Yeah',
+                    'Don\'t Eat the Yellow Snow, Frank Zappa',
+                    'Yellow Light, Of Monsters and Men',
+                    'Water Sports, James Clarke'
+                ],
+                averages: [2.00, 5.67, 6.33, 6.56, 7.89, 7.89, 8.00, 10.22, 10.33, 10.33, 12.22, 12.44, 12.56, 13.11, 13.44, 13.44, 13.67, 13.89, 14.44, 15.56],
+                stdevs: [1.32, 5.39, 3.84, 5.43, 4.94, 3.66, 6.80, 3.31, 6.22, 5.63, 5.07, 3.57, 3.64, 5.97, 5.05, 6.50, 5.12, 4.26, 4.10, 3.78]
+            },
+            green: {
+                labels: [
+                    'Jealous Guy, Roxy Music',
+                    'Jungle Boogie, Kool and the Gang',
+                    'A Forest, The Cure',
+                    'Fake Plastic Trees, Radiohead',
+                    'Forest Fire, Lloyd Cole and the Commotions',
+                    'From the Edge of the Deep Green Sea, The Cure',
+                    'Green Door, Shakin\' Stevens',
+                    'Green Onions, Two Tone Mods',
+                    'Green River, Creedence Clearwater Revival',
+                    'Grassman, Dodgy',
+                    'Nothing But Green Lights, Tom Vek',
+                    'Green and Grey, New Model Army',
+                    'Green Mind, Dinosaur Jr.',
+                    'Green Eyes, Coldplay',
+                    'Green Manalishi, Fleetwood Mac',
+                    'O Green World, Gorillaz',
+                    'Teal, Wunderhorse',
+                    'Froggy Went a Courtin, Elizabeth Mitchell',
+                    'Greensleeves, The King\'s Singers',
+                    'Green Manalishi, Judas Priest'
+                ],
+                averages: [6.00, 6.25, 6.75, 8.13, 8.63, 9.38, 9.50, 9.88, 10.00, 10.25, 10.50, 11.00, 11.50, 11.88, 12.00, 12.00, 12.75, 14.00, 14.63, 15.00],
+                stdevs: [5.50, 5.12, 4.50, 7.32, 4.69, 4.98, 6.28, 3.64, 2.98, 5.57, 6.14, 5.10, 7.15, 6.33, 5.15, 5.40, 2.96, 7.29, 6.61, 5.40]
+            },
+            blue: {
+                labels: [
+                    'Union City Blue, Blondie',
+                    'Tangled Up in Blue, Bob Dylan',
+                    'Lucy in the Sky with Diamonds, The Beatles',
+                    'Subterranean Homesick Blues, Bob Dylan',
+                    'Forever in Blue Jeans, Neil Diamond',
+                    'Fisherman\'s Blues, The Waterboys',
+                    'Pale Blue Eyes, Velvet Underground',
+                    'Blue Hotel, Chris Issac',
+                    'Sky Blue Sky, Wilco',
+                    'It\'s All Over Now, Baby Blue, Them',
+                    'Blue Lines, Massive Attack',
+                    'Folsom Prison Blues, Johnny Cash',
+                    'Two Blue Eyes, Beirut',
+                    'True Blue, Madonna',
+                    'Bluebird, Paul McCartney & Wings',
+                    'Blues Run the Game, Jackson Frank',
+                    'Blue Hat for a Blue Day, Nick Heyward',
+                    'Natural Blues, Moby',
+                    'Blue Sky Mine, Midnight Oil',
+                    'Electric Blue, Arcade Fire',
+                    'Ocean, Pearl Jam',
+                    'Blue, NewDad',
+                    'Cool Blue Reason, Cake'
+                ],
+                averages: [4.29, 5.86, 6.00, 8.00, 8.71, 8.71, 10.14, 10.29, 10.57, 11.29, 11.71, 11.86, 12.29, 13.43, 13.57, 13.86, 14.29, 15.43, 15.86, 16.29, 16.83, 17.14, 18.71],
+                stdevs: [2.43, 4.91, 6.43, 5.35, 4.89, 6.34, 5.90, 4.42, 6.50, 6.73, 7.91, 9.04, 7.59, 4.04, 4.12, 6.26, 2.63, 6.48, 5.05, 5.35, 8.68, 3.24, 4.39]
+            },
+            indigo: {
+                labels: [
+                    'I Heard It Through the Grapevine, Marvin Gaye',
+                    'Bye Bye Bad Man, The Stone Roses',
+                    'The Sea, Morcheeba',
+                    'Indigo, Peter Gabriel',
+                    'An Ocean In Between the Waves, The War on Drugs',
+                    'Isn\'t it Midnight, Fleetwood Mac',
+                    'Lavender, Marillion',
+                    'Mood Indigo, Duke Ellington',
+                    'Atlantic Ocean, Waterfall',
+                    'Oily Water, Blur',
+                    'Indigo Eyes, Peter Murphy',
+                    'Purple, Hollow Coves',
+                    'Jeans On, David Dundas',
+                    'I Sat by the Ocean, Queens of the Stone Age',
+                    'Indigo, Sam Barber',
+                    'The Deepest Blues Are Black, Foo Fighters',
+                    'Grapes Of Wrath, The Mission',
+                    'Dusk Till Dawn, Ladyhawke'
+                ],
+                averages: [3.67, 4.33, 7.00, 7.56, 7.89, 8.00, 8.78, 8.89, 9.22, 9.44, 10.11, 10.67, 11.78, 11.89, 12.22, 12.33, 14.33, 14.78],
+                stdevs: [2.83, 1.73, 3.32, 4.30, 5.06, 4.06, 5.47, 6.27, 5.87, 4.82, 3.44, 5.34, 5.65, 6.51, 4.35, 5.41, 3.91, 2.68]
+            }
+        };
+
+        let currentChart = null;
+        let currentColor = 'all';
+        let sortMode = 'average'; // 'average' or 'stdev'
+
+        function changeSortMode(mode) {
+            sortMode = mode;
+            
+            // Update button states
+            document.querySelectorAll('.sort-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update chart with new sort
+            updateChart(currentColor);
+        }
+
+        function filterData(color) {
+            currentColor = color;
+            
+            // Update button states
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (!btn.classList.contains('sort-btn')) {
+                    btn.classList.remove('active');
+                }
+            });
+            event.target.classList.add('active');
+            
+            // Adjust chart container height
+            const container = document.getElementById('chartContainer');
+            if (color === 'all') {
+                container.classList.add('all-view');
+            } else {
+                container.classList.remove('all-view');
+            }
+            
+            // Update chart
+            updateChart(color);
+        }
+
+        function updateChart(color) {
+            const ctx = document.getElementById('popularityChart').getContext('2d');
+            
+            // Destroy existing chart
+            if (currentChart) {
+                currentChart.destroy();
+            }
+            
+            // Define colour mapping
+            const colorMap = {
+                red: 'rgba(231, 76, 60, 0.7)',
+                orange: 'rgba(230, 126, 34, 0.7)',
+                yellow: 'rgba(241, 196, 15, 0.7)',
+                green: 'rgba(39, 174, 96, 0.7)',
+                blue: 'rgba(52, 152, 219, 0.7)',
+                indigo: 'rgba(75, 0, 130, 0.7)'
+            };
+
+            const colorMapBorder = {
+                red: 'rgba(231, 76, 60, 1)',
+                orange: 'rgba(230, 126, 34, 1)',
+                yellow: 'rgba(241, 196, 15, 1)',
+                green: 'rgba(39, 174, 96, 1)',
+                blue: 'rgba(52, 152, 219, 1)',
+                indigo: 'rgba(75, 0, 130, 1)'
+            };
+            
+            let chartData, chartLabels, chartStdevs, barColors, barBorderColors;
+            
+            if (color === 'all') {
+                // Combine all data and sort by selected mode
+                let combined = [];
+                for (let colorKey in allData) {
+                    const data = allData[colorKey];
+                    for (let i = 0; i < data.labels.length; i++) {
+                        combined.push({
+                            label: data.labels[i],
+                            average: data.averages[i],
+                            stdev: data.stdevs[i],
+                            color: colorKey
+                        });
+                    }
+                }
+                
+                // Sort by selected mode (ascending)
+                if (sortMode === 'average') {
+                    combined.sort((a, b) => a.average - b.average);
+                } else {
+                    combined.sort((a, b) => a.stdev - b.stdev);
+                }
+                
+                chartLabels = combined.map(item => item.label);
+                chartData = combined.map(item => item.average);
+                chartStdevs = combined.map(item => item.stdev);
+                barColors = combined.map(item => colorMap[item.color]);
+                barBorderColors = combined.map(item => colorMapBorder[item.color]);
+            } else {
+                const data = allData[color];
+                
+                // Create array of indices to sort
+                let indices = Array.from({length: data.labels.length}, (_, i) => i);
+                
+                // Sort indices based on selected mode
+                if (sortMode === 'average') {
+                    indices.sort((a, b) => data.averages[a] - data.averages[b]);
+                } else {
+                    indices.sort((a, b) => data.stdevs[a] - data.stdevs[b]);
+                }
+                
+                chartLabels = indices.map(i => data.labels[i]);
+                chartData = indices.map(i => data.averages[i]);
+                chartStdevs = indices.map(i => data.stdevs[i]);
+                barColors = Array(data.labels.length).fill(colorMap[color]);
+                barBorderColors = Array(data.labels.length).fill(colorMapBorder[color]);
+            }
+            
+            const config = {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [{
+                        label: 'Average score',
+                        data: chartData,
+                        backgroundColor: barColors,
+                        borderColor: barBorderColors,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: color === 'all' 
+                                ? 'All songs (sorted by ' + (sortMode === 'average' ? 'average score' : 'standard deviation') + ')' 
+                                : color.charAt(0).toUpperCase() + color.slice(1) + ' songs (sorted by ' + (sortMode === 'average' ? 'average score' : 'standard deviation') + ')',
+                            font: {
+                                size: 18,
+                                weight: 'bold'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    const stdev = chartStdevs[context.dataIndex];
+                                    return 'Std dev: ' + stdev.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 25,
+                            title: {
+                                display: true,
+                                text: 'Average score (lower is more popular)',
+                                font: {
+                                    size: 14
+                                }
+                            },
+                            grid: {
+                                display: true
+                            }
+                        },
+                        y: {
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                },
+                plugins: [{
+                    id: 'errorBars',
+                    afterDatasetsDraw(chart) {
+                        const ctx = chart.ctx;
+                        const meta = chart.getDatasetMeta(0);
+                        
+                        meta.data.forEach((bar, index) => {
+                            const stdev = chartStdevs[index];
+                            const value = chartData[index];
+                            const x = bar.x;
+                            const y = bar.y;
+                            
+                            // Calculate error bar positions
+                            const xScale = chart.scales.x;
+                            const leftX = xScale.getPixelForValue(Math.max(0, value - stdev));
+                            const rightX = xScale.getPixelForValue(value + stdev);
+                            
+                            // Draw error bar
+                            ctx.save();
+                            ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+                            ctx.lineWidth = 2;
+                            
+                            // Horizontal line
+                            ctx.beginPath();
+                            ctx.moveTo(leftX, y);
+                            ctx.lineTo(rightX, y);
+                            ctx.stroke();
+                            
+                            // Left cap
+                            ctx.beginPath();
+                            ctx.moveTo(leftX, y - 5);
+                            ctx.lineTo(leftX, y + 5);
+                            ctx.stroke();
+                            
+                            // Right cap
+                            ctx.beginPath();
+                            ctx.moveTo(rightX, y - 5);
+                            ctx.lineTo(rightX, y + 5);
+                            ctx.stroke();
+                            
+                            ctx.restore();
+                        });
+                    }
+                }]
+            };
+            
+            currentChart = new Chart(ctx, config);
+        }
+
+        // Initialize chart with all data
+        window.onload = function() {
+            document.getElementById('chartContainer').classList.add('all-view');
+            updateChart('all');
+        };
+    </script>
+</body>
+</html>
