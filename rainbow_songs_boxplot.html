@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rainbow Song Box Plots</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@sgratzl/chartjs-chart-boxplot@4.2.5/build/index.umd.min.js"></script>
+    <script src="https://unpkg.com/@sgratzl/chartjs-chart-boxplot@4"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,18 +54,17 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
-        .filter-btn.red:hover { background-color: #e74c3c; color: white; border-color: #e74c3c; }
-        .filter-btn.orange:hover { background-color: #e67e22; color: white; border-color: #e67e22; }
-        .filter-btn.yellow:hover { background-color: #f39c12; color: white; border-color: #f39c12; }
-        .filter-btn.green:hover { background-color: #27ae60; color: white; border-color: #27ae60; }
-        .filter-btn.blue:hover { background-color: #3498db; color: white; border-color: #3498db; }
-        .filter-btn.indigo:hover { background-color: #4b0082; color: white; border-color: #4b0082; }
+        .filter-btn.red:hover { background-color: #e74c3c; color: white; }
+        .filter-btn.orange:hover { background-color: #e67e22; color: white; }
+        .filter-btn.yellow:hover { background-color: #f39c12; color: white; }
+        .filter-btn.green:hover { background-color: #27ae60; color: white; }
+        .filter-btn.blue:hover { background-color: #3498db; color: white; }
+        .filter-btn.indigo:hover { background-color: #4b0082; color: white; }
         .filter-btn.all:hover {
             background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082);
             color: white;
-            border-color: transparent;
         }
-        .filter-btn.active { color: white; border-color: transparent; }
+        .filter-btn.active { color: white; }
         .filter-btn.red.active { background-color: #e74c3c; }
         .filter-btn.orange.active { background-color: #e67e22; }
         .filter-btn.yellow.active { background-color: #f39c12; }
@@ -74,7 +73,6 @@
         .filter-btn.indigo.active { background-color: #4b0082; }
         .filter-btn.all.active {
             background: linear-gradient(to right, #e74c3c, #e67e22, #f39c12, #27ae60, #3498db, #4b0082);
-            border-color: transparent;
         }
 
         #chartContainer {
@@ -130,7 +128,6 @@
             indigo: 'rgba(75, 0, 130, 1)'
         };
 
-        // Load the voting data
         fetch('voting_data_all.json')
             .then(response => response.json())
             .then(data => {
@@ -162,19 +159,16 @@
                 currentChart.destroy();
             }
 
-            // Filter songs by color
             let filteredSongs = filterColor === 'all'
                 ? votingData.songs
                 : votingData.songs.filter(song => song.color === filterColor);
 
-            // Sort songs by average score
             filteredSongs.sort((a, b) => {
                 const avgA = Object.values(a.scores).reduce((sum, v) => sum + v, 0) / Object.values(a.scores).length;
                 const avgB = Object.values(b.scores).reduce((sum, v) => sum + v, 0) / Object.values(b.scores).length;
                 return avgA - avgB;
             });
 
-            // Prepare data for box plot
             const labels = filteredSongs.map(song => song.song);
             const boxData = filteredSongs.map(song => Object.values(song.scores));
             const colors = filteredSongs.map(song => colorMap[song.color]);
