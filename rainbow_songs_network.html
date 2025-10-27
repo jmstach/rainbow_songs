@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Affinity - Network Graph</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        #network {
+            width: 100%;
+            height: 700px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .control-group label {
+            font-weight: 600;
+            color: #333;
+        }
+        .control-group input {
+            width: 150px;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .legend-line {
+            width: 40px;
+            height: 3px;
+            border-radius: 2px;
+        }
+        .node {
+            cursor: pointer;
+            stroke: #fff;
+            stroke-width: 2px;
+        }
+        .link {
+            stroke-opacity: 0.6;
+        }
+        .node-label {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #333;
+        }
+        .tooltip {
+            position: absolute;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 5px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Voter Affinity Network</h1>
+        <p class="info">Interactive network showing voter relationships • Thicker edges = stronger correlation • Drag nodes to rearrange</p>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="thresholdSlider">Correlation Threshold:</label>
+                <input type="range" id="thresholdSlider" min="0" max="0.8" step="0.05" value="0.1">
+                <span id="thresholdValue">0.10</span>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-line" style="background-color: #2e7d32; width: 60px; height: 5px;"></div>
+                <span>Strong correlation (≥ 0.5)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line" style="background-color: #66bb6a; width: 40px; height: 3px;"></div>
+                <span>Moderate correlation (0.3-0.5)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-line" style="background-color: #a5d6a7; width: 30px; height: 2px;"></div>
+                <span>Weak correlation (0-0.3)</span>
+            </div>
+        </div>
+
+        <div id="network"></div>
+        <div class="tooltip" id="tooltip"></div>
+    </div>
+
+    <script>
+        let correlationData = null;
+        let simulation = null;
+        let threshold = 0.1;
+
+        const width = document.getElementById('network').clientWidth;
+        const height = 700;
+
+        const svg = d3.select('#network')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+        const g = svg.append('g');
+
+        // Add zoom
+        const zoom = d3.zoom()
+            .scaleExtent([0.5, 3])
+            .on('zoom', (event) => {
+                g.attr('transform', event.transform);
+            });
+        svg.call(zoom);
+
+        fetch('voter_correlations.json')
+            .then(response => response.json())
+            .then(data => {
+                correlationData = data;
+                renderNetwork();
+            });
+
+        document.getElementById('thresholdSlider').addEventListener('input', (e) => {
+            threshold = parseFloat(e.target.value);
+            document.getElementById('thresholdValue').textContent = threshold.toFixed(2);
+            renderNetwork();
+        });
+
+        function getEdgeColor(corr) {
+            if (corr >= 0.5) return '#2e7d32';
+            if (corr >= 0.3) return '#66bb6a';
+            return '#a5d6a7';
+        }
+
+        function getEdgeWidth(corr) {
+            if (corr >= 0.5) return 5;
+            if (corr >= 0.3) return 3;
+            return 2;
+        }
+
+        function renderNetwork() {
+            if (!correlationData) return;
+
+            g.selectAll('*').remove();
+
+            const voters = correlationData.voters;
+            const correlations = correlationData.correlations;
+
+            // Build nodes
+            const nodes = voters.map(v => ({ id: v, name: v }));
+
+            // Build edges (only show correlations above threshold)
+            const links = [];
+            voters.forEach(v1 => {
+                voters.forEach(v2 => {
+                    if (v1 < v2) {
+                        const corr = correlations[v1][v2];
+                        if (corr >= threshold) {
+                            links.push({
+                                source: v1,
+                                target: v2,
+                                correlation: corr
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Create force simulation
+            simulation = d3.forceSimulation(nodes)
+                .force('link', d3.forceLink(links)
+                    .id(d => d.id)
+                    .distance(d => 200 * (1 - d.correlation))
+                    .strength(d => d.correlation))
+                .force('charge', d3.forceManyBody().strength(-500))
+                .force('center', d3.forceCenter(width / 2, height / 2))
+                .force('collision', d3.forceCollide().radius(50));
+
+            // Draw links
+            const link = g.append('g')
+                .selectAll('line')
+                .data(links)
+                .enter()
+                .append('line')
+                .attr('class', 'link')
+                .attr('stroke', d => getEdgeColor(d.correlation))
+                .attr('stroke-width', d => getEdgeWidth(d.correlation));
+
+            // Draw nodes
+            const node = g.append('g')
+                .selectAll('circle')
+                .data(nodes)
+                .enter()
+                .append('circle')
+                .attr('class', 'node')
+                .attr('r', 25)
+                .attr('fill', '#667eea')
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended))
+                .on('mouseover', function(event, d) {
+                    d3.select(this)
+                        .transition()
+                        .duration(200)
+                        .attr('r', 30);
+
+                    // Show connections
+                    const connections = [];
+                    links.forEach(link => {
+                        if (link.source.id === d.id || link.target.id === d.id) {
+                            const other = link.source.id === d.id ? link.target.id : link.source.id;
+                            connections.push(`${other}: ${link.correlation.toFixed(3)}`);
+                        }
+                    });
+
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.innerHTML = `<strong>${d.name}</strong><br>` +
+                        (connections.length > 0 ?
+                            'Connections:<br>' + connections.join('<br>') :
+                            'No connections above threshold');
+                    tooltip.style.opacity = 1;
+                    tooltip.style.left = (event.pageX + 10) + 'px';
+                    tooltip.style.top = (event.pageY + 10) + 'px';
+                })
+                .on('mouseout', function() {
+                    d3.select(this)
+                        .transition()
+                        .duration(200)
+                        .attr('r', 25);
+                    document.getElementById('tooltip').style.opacity = 0;
+                });
+
+            // Draw labels
+            const labels = g.append('g')
+                .selectAll('text')
+                .data(nodes)
+                .enter()
+                .append('text')
+                .attr('class', 'node-label')
+                .attr('dy', '.35em')
+                .text(d => d.name);
+
+            // Update positions on tick
+            simulation.on('tick', () => {
+                link
+                    .attr('x1', d => d.source.x)
+                    .attr('y1', d => d.source.y)
+                    .attr('x2', d => d.target.x)
+                    .attr('y2', d => d.target.y);
+
+                node
+                    .attr('cx', d => d.x)
+                    .attr('cy', d => d.y);
+
+                labels
+                    .attr('x', d => d.x)
+                    .attr('y', d => d.y);
+            });
+        }
+
+        function dragstarted(event) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            event.subject.fx = event.subject.x;
+            event.subject.fy = event.subject.y;
+        }
+
+        function dragged(event) {
+            event.subject.fx = event.x;
+            event.subject.fy = event.y;
+        }
+
+        function dragended(event) {
+            if (!event.active) simulation.alphaTarget(0);
+            event.subject.fx = null;
+            event.subject.fy = null;
+        }
+    </script>
+</body>
+</html>
