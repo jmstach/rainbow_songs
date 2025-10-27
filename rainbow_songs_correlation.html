@@ -101,12 +101,57 @@
             border-radius: 5px;
             border-left: 4px solid #667eea;
         }
+        .nav-menu {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .nav-menu label {
+            font-weight: 600;
+            color: #333;
+        }
+        .nav-menu select {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: white;
+            cursor: pointer;
+            min-width: 300px;
+        }
+        .nav-menu select:hover {
+            border-color: #667eea;
+        }
+        .nav-menu select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Voter Affinity Analysis</h1>
         <p class="info">Correlation matrix showing similarity in voting patterns • Higher values = more similar taste</p>
+        <div class="nav-menu">
+            <label for="visualization-select">Jump to: </label>
+            <select id="visualization-select" onchange="if(this.value) window.location.href=this.value">
+                <option value="">Choose a visualization...</option>
+                <option value="rainbow_songs.html">Bar Chart - Rankings with Error Bars</option>
+                <option value="rainbow_songs_scatter.html">Scatterplot - Average vs Std Dev</option>
+                <option value="rainbow_songs_heatmap.html">Heatmap - Individual Voter Rankings</option>
+                <option value="rainbow_songs_boxplot.html">Box Plots - Distribution Analysis</option>
+                <option value="rainbow_songs_correlation.html">Correlation Matrix - Voter Similarity</option>
+                <option value="rainbow_songs_network.html">Network Graph - Voter Affinities</option>
+            </select>
+        </div>
+
 
         <div class="legend">
             <span><strong>Correlation:</strong></span>
