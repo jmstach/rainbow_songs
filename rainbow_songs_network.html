@@ -253,19 +253,26 @@
                         .duration(200)
                         .attr('r', 30);
 
-                    // Show connections
+                    // Show connections sorted by strength
                     const connections = [];
                     links.forEach(link => {
                         if (link.source.id === d.id || link.target.id === d.id) {
                             const other = link.source.id === d.id ? link.target.id : link.source.id;
-                            connections.push(`${other}: ${link.correlation.toFixed(3)}`);
+                            connections.push({
+                                name: other,
+                                correlation: link.correlation
+                            });
                         }
                     });
+
+                    // Sort by correlation strength (highest first)
+                    connections.sort((a, b) => b.correlation - a.correlation);
 
                     const tooltip = document.getElementById('tooltip');
                     tooltip.innerHTML = `<strong>${d.name}</strong><br>` +
                         (connections.length > 0 ?
-                            'Connections:<br>' + connections.join('<br>') :
+                            'Connections (by strength):<br>' +
+                            connections.map(c => `${c.name}: ${c.correlation.toFixed(3)}`).join('<br>') :
                             'No connections above threshold');
                     tooltip.style.opacity = 1;
                     tooltip.style.left = (event.pageX + 10) + 'px';
