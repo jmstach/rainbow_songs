@@ -1,0 +1,778 @@
+{
+  "submitters": [
+    "Corbs",
+    "Dave",
+    "Ian",
+    "Jem",
+    "Justin",
+    "Mark",
+    "Paul",
+    "Shawn",
+    "Stan",
+    "Steve",
+    "Tony"
+  ],
+  "voters": [
+    "Corbs",
+    "Dave",
+    "Ian",
+    "Jem",
+    "Justin",
+    "Mark",
+    "Paul",
+    "Shawn",
+    "Stan",
+    "Steve",
+    "Tony"
+  ],
+  "affinities": {
+    "Corbs": {
+      "Corbs": {
+        "average": 1.5,
+        "count": 6,
+        "min": 1.0,
+        "max": 2.0
+      },
+      "Dave": {
+        "average": 10.71,
+        "count": 7,
+        "min": 3.0,
+        "max": 19.0
+      },
+      "Ian": {
+        "average": 11.56,
+        "count": 9,
+        "min": 4.0,
+        "max": 19.0
+      },
+      "Jem": {
+        "average": 12.89,
+        "count": 9,
+        "min": 2.0,
+        "max": 20.0
+      },
+      "Justin": {
+        "average": 12.33,
+        "count": 3,
+        "min": 6.0,
+        "max": 16.0
+      },
+      "Mark": {
+        "average": 10.22,
+        "count": 9,
+        "min": 2.0,
+        "max": 19.0
+      },
+      "Paul": {
+        "average": 11.75,
+        "count": 4,
+        "min": 1.0,
+        "max": 19.0
+      },
+      "Shawn": {
+        "average": 15.86,
+        "count": 7,
+        "min": 6.0,
+        "max": 20.0
+      },
+      "Stan": {
+        "average": 12.33,
+        "count": 9,
+        "min": 2.0,
+        "max": 20.0
+      },
+      "Steve": {
+        "average": 13.78,
+        "count": 9,
+        "min": 2.0,
+        "max": 20.0
+      },
+      "Tony": {
+        "average": 12.56,
+        "count": 9,
+        "min": 6.0,
+        "max": 18.0
+      }
+    },
+    "Dave": {
+      "Corbs": {
+        "average": 12.0,
+        "count": 6,
+        "min": 3.0,
+        "max": 20.0
+      },
+      "Dave": {
+        "average": 6.3,
+        "count": 10,
+        "min": 1.0,
+        "max": 23.0
+      },
+      "Ian": {
+        "average": 11.67,
+        "count": 9,
+        "min": 1.0,
+        "max": 20.0
+      },
+      "Jem": {
+        "average": 12.67,
+        "count": 12,
+        "min": 1.0,
+        "max": 22.0
+      },
+      "Justin": {
+        "average": 15.67,
+        "count": 6,
+        "min": 9.0,
+        "max": 23.0
+      },
+      "Mark": {
+        "average": 10.22,
+        "count": 9,
+        "min": 1.0,
+        "max": 19.0
+      },
+      "Paul": {
+        "average": 10.75,
+        "count": 4,
+        "min": 3.0,
+        "max": 18.0
+      },
+      "Shawn": {
+        "average": 12.4,
+        "count": 10,
+        "min": 4.0,
+        "max": 23.0
+      },
+      "Stan": {
+        "average": 13.64,
+        "count": 11,
+        "min": 2.0,
+        "max": 20.0
+      },
+      "Steve": {
+        "average": 13.42,
+        "count": 12,
+        "min": 2.0,
+        "max": 23.0
+      },
+      "Tony": {
+        "average": 13.42,
+        "count": 12,
+        "min": 4.0,
+        "max": 23.0
+      }
+    },
+    "Ian": {
+      "Corbs": {
+        "average": 11.83,
+        "count": 6,
+        "min": 4.0,
+        "max": 19.0
+      },
+      "Dave": {
+        "average": 13.18,
+        "count": 11,
+        "min": 4.0,
+        "max": 20.0
+      },
+      "Ian": {
+        "average": 3.0,
+        "count": 10,
+        "min": 1.0,
+        "max": 10.0
+      },
+      "Jem": {
+        "average": 13.31,
+        "count": 13,
+        "min": 1.0,
+        "max": 20.0
+      },
+      "Justin": {
+        "average": 12.71,
+        "count": 7,
+        "min": 3.0,
+        "max": 18.0
+      },
+      "Mark": {
+        "average": 12.6,
+        "count": 10,
+        "min": 5.0,
+        "max": 20.0
+      },
+      "Paul": {
+        "average": 9.4,
+        "count": 5,
+        "min": 3.0,
+        "max": 17.0
+      },
+      "Shawn": {
+        "average": 12.27,
+        "count": 11,
+        "min": 5.0,
+        "max": 22.0
+      },
+      "Stan": {
+        "average": 14.38,
+        "count": 13,
+        "min": 9.0,
+        "max": 21.0
+      },
+      "Steve": {
+        "average": 13.0,
+        "count": 13,
+        "min": 2.0,
+        "max": 22.0
+      },
+      "Tony": {
+        "average": 10.54,
+        "count": 13,
+        "min": 3.0,
+        "max": 18.0
+      }
+    },
+    "Jem": {
+      "Corbs": {
+        "average": 8.67,
+        "count": 6,
+        "min": 4.0,
+        "max": 17.0
+      },
+      "Dave": {
+        "average": 7.75,
+        "count": 8,
+        "min": 2.0,
+        "max": 18.0
+      },
+      "Ian": {
+        "average": 6.78,
+        "count": 9,
+        "min": 1.0,
+        "max": 15.0
+      },
+      "Jem": {
+        "average": 3.8,
+        "count": 10,
+        "min": 1.0,
+        "max": 7.0
+      },
+      "Justin": {
+        "average": 8.25,
+        "count": 4,
+        "min": 2.0,
+        "max": 16.0
+      },
+      "Mark": {
+        "average": 8.0,
+        "count": 9,
+        "min": 1.0,
+        "max": 18.0
+      },
+      "Paul": {
+        "average": 8.25,
+        "count": 4,
+        "min": 2.0,
+        "max": 20.0
+      },
+      "Shawn": {
+        "average": 8.75,
+        "count": 8,
+        "min": 2.0,
+        "max": 18.0
+      },
+      "Stan": {
+        "average": 8.0,
+        "count": 10,
+        "min": 1.0,
+        "max": 18.0
+      },
+      "Steve": {
+        "average": 7.6,
+        "count": 10,
+        "min": 3.0,
+        "max": 19.0
+      },
+      "Tony": {
+        "average": 6.8,
+        "count": 10,
+        "min": 2.0,
+        "max": 20.0
+      }
+    },
+    "Justin": {
+      "Corbs": {
+        "average": 13.85,
+        "count": 13,
+        "min": 5.0,
+        "max": 20.0
+      },
+      "Dave": {
+        "average": 14.31,
+        "count": 13,
+        "min": 3.0,
+        "max": 22.0
+      },
+      "Ian": {
+        "average": 10.47,
+        "count": 17,
+        "min": 2.0,
+        "max": 20.0
+      },
+      "Jem": {
+        "average": 9.14,
+        "count": 21,
+        "min": 2.0,
+        "max": 17.0
+      },
+      "Justin": {
+        "average": 5.3,
+        "count": 10,
+        "min": 1.0,
+        "max": 18.0
+      },
+      "Mark": {
+        "average": 11.88,
+        "count": 17,
+        "min": 3.0,
+        "max": 19.0
+      },
+      "Paul": {
+        "average": 9.11,
+        "count": 9,
+        "min": 5.0,
+        "max": 14.0
+      },
+      "Shawn": {
+        "average": 10.58,
+        "count": 19,
+        "min": 1.0,
+        "max": 18.0
+      },
+      "Stan": {
+        "average": 11.19,
+        "count": 21,
+        "min": 2.0,
+        "max": 22.0
+      },
+      "Steve": {
+        "average": 12.52,
+        "count": 21,
+        "min": 7.0,
+        "max": 21.0
+      },
+      "Tony": {
+        "average": 9.71,
+        "count": 21,
+        "min": 2.0,
+        "max": 18.0
+      }
+    },
+    "Mark": {
+      "Corbs": {
+        "average": 10.0,
+        "count": 6,
+        "min": 2.0,
+        "max": 16.0
+      },
+      "Dave": {
+        "average": 13.3,
+        "count": 10,
+        "min": 5.0,
+        "max": 21.0
+      },
+      "Ian": {
+        "average": 12.64,
+        "count": 11,
+        "min": 4.0,
+        "max": 19.0
+      },
+      "Jem": {
+        "average": 12.08,
+        "count": 12,
+        "min": 2.0,
+        "max": 20.0
+      },
+      "Justin": {
+        "average": 8.5,
+        "count": 6,
+        "min": 2.0,
+        "max": 20.0
+      },
+      "Mark": {
+        "average": 4.0,
+        "count": 11,
+        "min": 1.0,
+        "max": 14.0
+      },
+      "Paul": {
+        "average": 11.0,
+        "count": 5,
+        "min": 4.0,
+        "max": 15.0
+      },
+      "Shawn": {
+        "average": 11.7,
+        "count": 10,
+        "min": 1.0,
+        "max": 20.0
+      },
+      "Stan": {
+        "average": 13.75,
+        "count": 12,
+        "min": 4.0,
+        "max": 20.0
+      },
+      "Steve": {
+        "average": 11.42,
+        "count": 12,
+        "min": 1.0,
+        "max": 19.0
+      },
+      "Tony": {
+        "average": 13.17,
+        "count": 12,
+        "min": 1.0,
+        "max": 20.0
+      }
+    },
+    "Paul": {
+      "Corbs": {
+        "average": 8.0,
+        "count": 6,
+        "min": 6.0,
+        "max": 10.0
+      },
+      "Dave": {
+        "average": 10.44,
+        "count": 9,
+        "min": 2.0,
+        "max": 18.0
+      },
+      "Ian": {
+        "average": 10.89,
+        "count": 9,
+        "min": 1.0,
+        "max": 20.0
+      },
+      "Jem": {
+        "average": 11.0,
+        "count": 11,
+        "min": 1.0,
+        "max": 21.0
+      },
+      "Justin": {
+        "average": 11.8,
+        "count": 5,
+        "min": 1.0,
+        "max": 22.0
+      },
+      "Mark": {
+        "average": 7.67,
+        "count": 9,
+        "min": 2.0,
+        "max": 16.0
+      },
+      "Paul": {
+        "average": 4.0,
+        "count": 6,
+        "min": 2.0,
+        "max": 7.0
+      },
+      "Shawn": {
+        "average": 8.89,
+        "count": 9,
+        "min": 5.0,
+        "max": 14.0
+      },
+      "Stan": {
+        "average": 7.82,
+        "count": 11,
+        "min": 2.0,
+        "max": 17.0
+      },
+      "Steve": {
+        "average": 7.73,
+        "count": 11,
+        "min": 2.0,
+        "max": 14.0
+      },
+      "Tony": {
+        "average": 12.82,
+        "count": 11,
+        "min": 1.0,
+        "max": 20.0
+      }
+    },
+    "Shawn": {
+      "Corbs": {
+        "average": 8.0,
+        "count": 5,
+        "min": 4.0,
+        "max": 14.0
+      },
+      "Dave": {
+        "average": 9.0,
+        "count": 9,
+        "min": 1.0,
+        "max": 20.0
+      },
+      "Ian": {
+        "average": 13.25,
+        "count": 8,
+        "min": 1.0,
+        "max": 18.0
+      },
+      "Jem": {
+        "average": 11.18,
+        "count": 11,
+        "min": 1.0,
+        "max": 23.0
+      },
+      "Justin": {
+        "average": 14.33,
+        "count": 6,
+        "min": 7.0,
+        "max": 21.0
+      },
+      "Mark": {
+        "average": 11.12,
+        "count": 8,
+        "min": 4.0,
+        "max": 17.0
+      },
+      "Paul": {
+        "average": 8.5,
+        "count": 4,
+        "min": 3.0,
+        "max": 16.0
+      },
+      "Shawn": {
+        "average": 5.3,
+        "count": 10,
+        "min": 1.0,
+        "max": 20.0
+      },
+      "Stan": {
+        "average": 11.0,
+        "count": 11,
+        "min": 3.0,
+        "max": 20.0
+      },
+      "Steve": {
+        "average": 7.82,
+        "count": 11,
+        "min": 2.0,
+        "max": 17.0
+      },
+      "Tony": {
+        "average": 10.82,
+        "count": 11,
+        "min": 2.0,
+        "max": 21.0
+      }
+    },
+    "Stan": {
+      "Corbs": {
+        "average": 10.6,
+        "count": 5,
+        "min": 4.0,
+        "max": 15.0
+      },
+      "Dave": {
+        "average": 11.44,
+        "count": 9,
+        "min": 4.0,
+        "max": 20.0
+      },
+      "Ian": {
+        "average": 8.11,
+        "count": 9,
+        "min": 3.0,
+        "max": 17.0
+      },
+      "Jem": {
+        "average": 7.27,
+        "count": 11,
+        "min": 1.0,
+        "max": 16.0
+      },
+      "Justin": {
+        "average": 11.17,
+        "count": 6,
+        "min": 9.0,
+        "max": 14.0
+      },
+      "Mark": {
+        "average": 10.56,
+        "count": 9,
+        "min": 2.0,
+        "max": 20.0
+      },
+      "Paul": {
+        "average": 8.0,
+        "count": 3,
+        "min": 1.0,
+        "max": 15.0
+      },
+      "Shawn": {
+        "average": 10.6,
+        "count": 10,
+        "min": 3.0,
+        "max": 21.0
+      },
+      "Stan": {
+        "average": 3.0,
+        "count": 11,
+        "min": 1.0,
+        "max": 7.0
+      },
+      "Steve": {
+        "average": 9.09,
+        "count": 11,
+        "min": 1.0,
+        "max": 19.0
+      },
+      "Tony": {
+        "average": 8.36,
+        "count": 11,
+        "min": 1.0,
+        "max": 17.0
+      }
+    },
+    "Steve": {
+      "Corbs": {
+        "average": 6.67,
+        "count": 6,
+        "min": 3.0,
+        "max": 17.0
+      },
+      "Dave": {
+        "average": 8.33,
+        "count": 9,
+        "min": 2.0,
+        "max": 18.0
+      },
+      "Ian": {
+        "average": 9.33,
+        "count": 9,
+        "min": 1.0,
+        "max": 16.0
+      },
+      "Jem": {
+        "average": 6.0,
+        "count": 11,
+        "min": 1.0,
+        "max": 16.0
+      },
+      "Justin": {
+        "average": 9.6,
+        "count": 5,
+        "min": 5.0,
+        "max": 18.0
+      },
+      "Mark": {
+        "average": 9.44,
+        "count": 9,
+        "min": 1.0,
+        "max": 17.0
+      },
+      "Paul": {
+        "average": 7.6,
+        "count": 5,
+        "min": 1.0,
+        "max": 20.0
+      },
+      "Shawn": {
+        "average": 5.67,
+        "count": 9,
+        "min": 1.0,
+        "max": 19.0
+      },
+      "Stan": {
+        "average": 9.09,
+        "count": 11,
+        "min": 1.0,
+        "max": 15.0
+      },
+      "Steve": {
+        "average": 3.91,
+        "count": 11,
+        "min": 1.0,
+        "max": 17.0
+      },
+      "Tony": {
+        "average": 9.0,
+        "count": 11,
+        "min": 3.0,
+        "max": 17.0
+      }
+    },
+    "Tony": {
+      "Corbs": {
+        "average": 10.5,
+        "count": 6,
+        "min": 4.0,
+        "max": 17.0
+      },
+      "Dave": {
+        "average": 11.9,
+        "count": 10,
+        "min": 4.0,
+        "max": 19.0
+      },
+      "Ian": {
+        "average": 9.8,
+        "count": 10,
+        "min": 1.0,
+        "max": 20.0
+      },
+      "Jem": {
+        "average": 11.5,
+        "count": 12,
+        "min": 1.0,
+        "max": 20.0
+      },
+      "Justin": {
+        "average": 10.33,
+        "count": 6,
+        "min": 2.0,
+        "max": 17.0
+      },
+      "Mark": {
+        "average": 13.6,
+        "count": 10,
+        "min": 7.0,
+        "max": 19.0
+      },
+      "Paul": {
+        "average": 13.5,
+        "count": 4,
+        "min": 4.0,
+        "max": 20.0
+      },
+      "Shawn": {
+        "average": 10.4,
+        "count": 10,
+        "min": 2.0,
+        "max": 19.0
+      },
+      "Stan": {
+        "average": 10.67,
+        "count": 12,
+        "min": 1.0,
+        "max": 19.0
+      },
+      "Steve": {
+        "average": 9.42,
+        "count": 12,
+        "min": 3.0,
+        "max": 17.0
+      },
+      "Tony": {
+        "average": 4.67,
+        "count": 12,
+        "min": 1.0,
+        "max": 18.0
+      }
+    }
+  }
+}

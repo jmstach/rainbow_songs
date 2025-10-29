@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submitter-Voter Affinity Analysis</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .info {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        .nav-menu {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .nav-menu label {
+            font-weight: 600;
+            color: #333;
+        }
+        .nav-menu select {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: white;
+            cursor: pointer;
+            min-width: 300px;
+        }
+        .nav-menu select:hover {
+            border-color: #667eea;
+        }
+        .nav-menu select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .matrix-wrapper {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        table.affinity-matrix {
+            border-collapse: collapse;
+            margin: 0 auto;
+            font-size: 13px;
+        }
+        table.affinity-matrix th {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            font-weight: 600;
+            min-width: 70px;
+        }
+        table.affinity-matrix td {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        table.affinity-matrix td:hover {
+            transform: scale(1.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            z-index: 10;
+            position: relative;
+        }
+        table.affinity-matrix th.submitter-name {
+            text-align: left;
+            background-color: #e9ecef;
+            font-weight: 600;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 30px 0 20px 0;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        .legend-box {
+            width: 40px;
+            height: 25px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .insights {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .insights h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .insight-item {
+            margin: 10px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        .insight-label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        .diagonal-highlight {
+            border: 2px solid #667eea !important;
+            font-weight: bold;
+        }
+        .count-badge {
+            font-size: 10px;
+            color: #888;
+            display: block;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Submitter-Voter Affinity Analysis</h1>
+        <p class="info">How does each voter rank songs submitted by each person? • Lower numbers = better rankings • Diagonal shows self-ranking</p>
+
+        <div class="nav-menu">
+            <label for="visualization-select">Jump to: </label>
+            <select id="visualization-select" onchange="if(this.value) window.location.href=this.value">
+                <option value="">Choose a visualization...</option>
+                <option value="rainbow_songs.html">Bar Chart - Rankings with Error Bars</option>
+                <option value="rainbow_songs_scatter.html">Scatterplot - Average vs Std Dev</option>
+                <option value="rainbow_songs_heatmap.html">Heatmap - Individual Voter Rankings</option>
+                <option value="rainbow_songs_boxplot.html">Box Plots - Distribution Analysis</option>
+                <option value="rainbow_songs_correlation.html">Correlation Matrix - Voter Similarity</option>
+                <option value="rainbow_songs_network.html">Network Graph - Voter Affinities</option>
+                <option value="rainbow_songs_submitter_affinity.html">Submitter-Voter Affinity Analysis</option>
+            </select>
+        </div>
+
+        <div class="legend">
+            <span><strong>Average Ranking:</strong></span>
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #1b5e20;"></div>
+                <span>1-5<br>(Loved it!)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #4caf50;"></div>
+                <span>5-10<br>(Really liked)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #fff9c4;"></div>
+                <span>10-15<br>(Mixed)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #ff9800;"></div>
+                <span>15-18<br>(Not favorite)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background-color: #d32f2f;"></div>
+                <span>18-20<br>(Disliked)</span>
+            </div>
+        </div>
+
+        <div class="matrix-wrapper">
+            <table class="affinity-matrix" id="affinityMatrix"></table>
+        </div>
+
+        <div class="insights" id="insights"></div>
+    </div>
+
+    <script>
+        let affinityData = null;
+
+        fetch('submitter_voter_affinity.json')
+            .then(response => response.json())
+            .then(data => {
+                affinityData = data;
+                renderMatrix();
+                generateInsights();
+            });
+
+        function getColorForAverage(avg) {
+            if (avg <= 5) {
+                // Dark green: 1-5
+                const intensity = (avg - 1) / 4;
+                const r = Math.round(27 + (76 - 27) * intensity);
+                const g = Math.round(94 + (175 - 94) * intensity);
+                const b = Math.round(32 + (80 - 32) * intensity);
+                return `rgb(${r}, ${g}, ${b})`;
+            } else if (avg <= 10) {
+                // Green to light yellow: 5-10
+                const intensity = (avg - 5) / 5;
+                const r = Math.round(76 + (255 - 76) * intensity);
+                const g = Math.round(175 + (249 - 175) * intensity);
+                const b = Math.round(80 + (196 - 80) * intensity);
+                return `rgb(${r}, ${g}, ${b})`;
+            } else if (avg <= 15) {
+                // Light yellow to orange: 10-15
+                const intensity = (avg - 10) / 5;
+                const r = Math.round(255);
+                const g = Math.round(249 - (249 - 152) * intensity);
+                const b = Math.round(196 - (196 - 0) * intensity);
+                return `rgb(${r}, ${g}, ${b})`;
+            } else if (avg <= 18) {
+                // Orange to red: 15-18
+                const intensity = (avg - 15) / 3;
+                const r = Math.round(255 - (255 - 211) * intensity);
+                const g = Math.round(152 - (152 - 47) * intensity);
+                const b = Math.round(0);
+                return `rgb(${r}, ${g}, ${b})`;
+            } else {
+                // Dark red: 18-20
+                return '#d32f2f';
+            }
+        }
+
+        function renderMatrix() {
+            if (!affinityData) return;
+
+            const submitters = affinityData.submitters;
+            const voters = affinityData.voters;
+            const affinities = affinityData.affinities;
+
+            const table = document.getElementById('affinityMatrix');
+            table.innerHTML = '';
+
+            // Create header row
+            const headerRow = table.insertRow();
+            const cornerCell = headerRow.insertCell();
+            cornerCell.innerHTML = '<th>Submitter →<br>Voter ↓</th>';
+
+            submitters.forEach(submitter => {
+                const cell = headerRow.insertCell();
+                cell.innerHTML = `<th>${submitter}</th>`;
+            });
+
+            // Create data rows
+            voters.forEach(voter => {
+                const row = table.insertRow();
+                const nameCell = row.insertCell();
+                nameCell.innerHTML = `<th class="submitter-name">${voter}</th>`;
+
+                submitters.forEach(submitter => {
+                    const cell = row.insertCell();
+                    const affinity = affinities[submitter][voter];
+
+                    if (affinity) {
+                        const avg = affinity.average;
+                        cell.innerHTML = `${avg}<span class="count-badge">(${affinity.count} songs)</span>`;
+                        cell.style.backgroundColor = getColorForAverage(avg);
+                        cell.style.color = avg < 12 ? 'white' : 'black';
+                        cell.title = `${voter} ranks ${submitter}'s songs:\nAvg: ${avg}\nBased on ${affinity.count} song(s)\nRange: ${affinity.min}-${affinity.max}`;
+
+                        // Highlight diagonal (self-rating)
+                        if (voter === submitter) {
+                            cell.classList.add('diagonal-highlight');
+                        }
+                    } else {
+                        cell.textContent = '-';
+                        cell.style.backgroundColor = '#f8f9fa';
+                        cell.title = `${voter} did not vote on any ${submitter} submissions`;
+                    }
+                });
+            });
+        }
+
+        function generateInsights() {
+            if (!affinityData) return;
+
+            const submitters = affinityData.submitters;
+            const voters = affinityData.voters;
+            const affinities = affinityData.affinities;
+
+            let insights = [];
+
+            // Find who ranks their own submissions best
+            const selfRankings = [];
+            submitters.forEach(person => {
+                if (affinities[person][person]) {
+                    selfRankings.push({
+                        person,
+                        avg: affinities[person][person].average
+                    });
+                }
+            });
+            selfRankings.sort((a, b) => a.avg - b.avg);
+
+            // Find best submitter-voter pairs (excluding self)
+            const bestPairs = [];
+            const worstPairs = [];
+            submitters.forEach(submitter => {
+                voters.forEach(voter => {
+                    if (submitter !== voter && affinities[submitter][voter]) {
+                        const affinity = affinities[submitter][voter];
+                        bestPairs.push({
+                            submitter,
+                            voter,
+                            avg: affinity.average,
+                            count: affinity.count
+                        });
+                        worstPairs.push({
+                            submitter,
+                            voter,
+                            avg: affinity.average,
+                            count: affinity.count
+                        });
+                    }
+                });
+            });
+            bestPairs.sort((a, b) => a.avg - b.avg);
+            worstPairs.sort((a, b) => b.avg - a.avg);
+
+            // Find most generous and most critical voters
+            const voterAvgs = {};
+            voters.forEach(voter => {
+                const avgs = [];
+                submitters.forEach(submitter => {
+                    if (submitter !== voter && affinities[submitter][voter]) {
+                        avgs.push(affinities[submitter][voter].average);
+                    }
+                });
+                if (avgs.length > 0) {
+                    voterAvgs[voter] = avgs.reduce((a, b) => a + b, 0) / avgs.length;
+                }
+            });
+            const sortedVoters = Object.entries(voterAvgs).sort((a, b) => a[1] - b[1]);
+
+            const insightsDiv = document.getElementById('insights');
+            insightsDiv.innerHTML = `
+                <h3>Key Insights</h3>
+
+                <div class="insight-item">
+                    <div class="insight-label">🎵 Self-Appreciation</div>
+                    <strong>${selfRankings[0].person}</strong> ranks their own submissions highest (avg: ${selfRankings[0].avg})<br>
+                    <strong>${selfRankings[selfRankings.length - 1].person}</strong> is most critical of their own submissions (avg: ${selfRankings[selfRankings.length - 1].avg})
+                </div>
+
+                <div class="insight-item">
+                    <div class="insight-label">❤️ Best Submitter-Voter Matches (excluding self)</div>
+                    ${bestPairs.slice(0, 5).map((p, i) =>
+                        `${i + 1}. <strong>${p.voter}</strong> loves <strong>${p.submitter}</strong>'s songs (avg: ${p.avg}, ${p.count} songs)`
+                    ).join('<br>')}
+                </div>
+
+                <div class="insight-item">
+                    <div class="insight-label">💔 Most Mismatched Tastes</div>
+                    ${worstPairs.slice(0, 5).map((p, i) =>
+                        `${i + 1}. <strong>${p.voter}</strong> ranks <strong>${p.submitter}</strong>'s songs lower (avg: ${p.avg}, ${p.count} songs)`
+                    ).join('<br>')}
+                </div>
+
+                <div class="insight-item">
+                    <div class="insight-label">😊 Most Generous Voters (for others' submissions)</div>
+                    ${sortedVoters.slice(0, 3).map((v, i) =>
+                        `${i + 1}. <strong>${v[0]}</strong> (avg rank given: ${v[1].toFixed(2)})`
+                    ).join('<br>')}
+                </div>
+
+                <div class="insight-item">
+                    <div class="insight-label">🎯 Most Selective Voters (for others' submissions)</div>
+                    ${sortedVoters.slice(-3).reverse().map((v, i) =>
+                        `${i + 1}. <strong>${v[0]}</strong> (avg rank given: ${v[1].toFixed(2)})`
+                    ).join('<br>')}
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
